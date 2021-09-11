@@ -1,0 +1,20 @@
+{
+  "name": "nestjs-react-template",
+  "version": "1.0.0",
+  "description": "Full stack template using NestJS for the backend and NextJS for the frontend",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "npm run start:backend",
+    "start:backend": "npm run start:dev --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/princhcanal/nestjs-nextjs-template.git"
+  },
+  "author": "Princh Harold Cañal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/princhcanal/nestjs-nextjs-template/issues"
+  },
+  "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme"
+}
