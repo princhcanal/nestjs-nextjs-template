@@ -1,6 +1,6 @@
-# NestJS/React Template
+# NestJS/NextJS Template
 
-The goal of this template is to create a template for full stack web development
+The goal of this project is to create a template for full stack web development
 using [NestJS](https://nestjs.com/) as the backend framework and
 [NextJS](https://nextjs.org/) as the frontend framework
 
