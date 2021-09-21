@@ -17,7 +17,7 @@ docker-compose up
 
 _Without docker-compose_
 
-Install [Docker Desktop](https://docs.docker.com/desktop/) if you haven't already
+Install [PostgreSQL](https://www.postgresql.org/download/) if you haven't already
 and follow the steps to get a PostgreSQL database up and running
 
 ### Step 2: Install backend dependencies

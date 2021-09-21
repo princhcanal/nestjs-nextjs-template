@@ -4,8 +4,9 @@
   "description": "Full stack template using NestJS for the backend and NextJS for the frontend",
   "main": "index.js",
   "scripts": {
-    "start:dev": "npm run start:backend",
-    "start:backend": "npm run start:dev --prefix backend"
+    "start:dev": "npm run start:dev:backend",
+    "start:dev:backend": "npm run start:dev --prefix backend",
+    "test:backend": "npm run test:e2e --prefix backend"
   },
   "repository": {
     "type": "git",

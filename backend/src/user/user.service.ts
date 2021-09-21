@@ -20,7 +20,7 @@ export class UserService {
 
     throw new HttpException(
       'User with this email does not exist',
-      HttpStatus.NOT_FOUND,
+      HttpStatus.BAD_REQUEST,
     );
   }
 
