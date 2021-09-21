@@ -13,8 +13,8 @@ import { AuthenticationService } from './authentication.service';
 import { JwtAuthenticationGuard } from './guards/jwtAuthentication.guard';
 import { RequestWithUser } from './types/requestWithUser.interface';
 import { JwtRefreshGuard } from './guards/jwtRefresh.guard';
-import { RegisterUserDTO } from '../user/dto/registerUser.dto';
-import { LoginUserDTO } from '../user/dto/loginUser.dto';
+import { RegisterUserDTO } from './dto/registerUser.dto';
+import { LoginUserDTO } from './dto/loginUser.dto';
 
 @Controller(AuthenticationController.AUTH_API_ROUTE)
 export class AuthenticationController {

@@ -4,10 +4,10 @@ import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
-import { RegisterUserDTO } from '../user/dto/registerUser.dto';
+import { RegisterUserDTO } from './dto/registerUser.dto';
 import { TokenPayload } from './types/tokenPayload.interface';
 import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
-import { LoginUserDTO } from '../user/dto/loginUser.dto';
+import { LoginUserDTO } from './dto/loginUser.dto';
 import { classToPlain } from 'class-transformer';
 import { User } from '../user/user.entity';
 
