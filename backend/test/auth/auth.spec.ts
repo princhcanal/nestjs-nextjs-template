@@ -15,7 +15,7 @@ describe('Authentication Controller', () => {
       .expect(201);
   });
 
-  // FIXME: logout responds with 401 Unauthorized
+  // // FIXME: logout responds with 401 Unauthorized
   // it('should register user, logout, then log in', async () => {
   //   await request
   //     .post(`${AuthenticationController.AUTH_API_ROUTE}/register`)
