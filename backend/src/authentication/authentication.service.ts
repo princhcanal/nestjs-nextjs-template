@@ -31,7 +31,6 @@ export class AuthenticationService {
       this.getCookieWithRefreshToken(user.id);
 
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
-    res.setHeader('Authorization', accessTokenCookie);
 
     this.setCookiesAndSend(res, [accessTokenCookie, refreshTokenCookie], user);
   }
