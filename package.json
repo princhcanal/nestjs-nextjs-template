@@ -4,9 +4,10 @@
   "description": "Full stack template using NestJS for the backend and NextJS for the frontend",
   "main": "index.js",
   "scripts": {
-    "start:dev": "npm run start:dev:backend",
+    "start:dev": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:dev:frontend\"",
     "start:dev:backend": "npm run start:dev --prefix backend",
-    "test:backend": "npm run test:e2e --prefix backend"
+    "test:backend": "npm run test:e2e --prefix backend",
+    "start:dev:frontend": "npm run start:dev --prefix frontend"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/princhcanal/nestjs-nextjs-template/issues"
   },
-  "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme"
+  "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme",
+  "devDependencies": {
+    "concurrently": "^6.2.1"
+  }
 }

@@ -60,5 +60,5 @@ npm run start:dev
 
 ### Step 5: Make sure the backend is running
 
-Visit `localhost:5000` in your browser and make sure you see a message saying
+Visit `localhost:5000/api/v1` in your browser and make sure you see a message saying
 `Hello World!`
