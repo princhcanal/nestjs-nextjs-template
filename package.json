@@ -7,8 +7,7 @@
     "start:dev": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:dev:frontend\"",
     "start:dev:backend": "npm run start:dev --prefix backend",
     "test:backend": "npm run test:e2e --prefix backend",
-    "start:dev:frontend": "npm run start:dev --prefix frontend",
-    "prepare": "husky install"
+    "start:dev:frontend": "npm run start:dev --prefix frontend"
   },
   "repository": {
     "type": "git",

@@ -9,6 +9,11 @@
     "lint": "next lint",
     "prepare": "husky install"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "prettier --write",
@@ -22,11 +27,6 @@
       "prettier --write",
       "git add"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "@chakra-ui/react": "^1.6.8",
