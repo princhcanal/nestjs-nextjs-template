@@ -7,7 +7,8 @@
     "start:dev": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:dev:frontend\"",
     "start:dev:backend": "npm run start:dev --prefix backend",
     "test:backend": "npm run test:e2e --prefix backend",
-    "start:dev:frontend": "npm run start:dev --prefix frontend"
+    "start:dev:frontend": "npm run start:dev --prefix frontend",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme",
   "devDependencies": {
-    "concurrently": "^6.2.1"
+    "concurrently": "^6.2.1",
+    "husky": "^7.0.0"
   }
 }
