@@ -11,7 +11,15 @@
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "npm run lint",
+      "prettier --write",
+      "git add"
+    ],
+    "src/**/*.{css,scss}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{html,json,js,md,yaml}": [
+      "prettier --write",
       "git add"
     ]
   },
@@ -42,7 +50,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "husky": "^7.0.0",
+    "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
     "prettier": "^2.4.1",
     "typescript": "4.4.3"

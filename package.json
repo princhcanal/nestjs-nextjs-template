@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme",
   "devDependencies": {
-    "concurrently": "^6.2.1",
-    "husky": "^7.0.0"
+    "concurrently": "^6.2.1"
   }
 }
