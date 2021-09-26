@@ -10,6 +10,7 @@ export class AppController {
   public getHello(): string {
     console.log('hello world');
     console.log('goodbye world');
+    console.log('test git hook');
     return this.appService.getHello();
   }
 
