@@ -26,11 +26,11 @@
     "prepare": "cd ../ && husky install ./backend/.husky"
   },
   "lint-staged": {
-    "src/**/*.{ts}": [
+    "src/**/*.ts": [
       "prettier --write",
       "tslint --fix"
     ],
-    "test/**/*.{ts}": [
+    "test/**/*.ts": [
       "prettier --write",
       "tslint --fix"
     ],
