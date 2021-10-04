@@ -17,13 +17,13 @@ export class AuthenticationService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   public async login(loginUserDTO: LoginUserDTO, res: Response) {
     const user = await this.getAuthenticatedUser(
       loginUserDTO.email,
-      loginUserDTO.password,
+      loginUserDTO.password
     );
 
     const accessTokenCookie = this.getCookieWithJwtAccessToken(user.id);
@@ -50,13 +50,13 @@ export class AuthenticationService {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
           'User with that username or email already exists',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_REQUEST
         );
       }
 
       throw new HttpException(
         'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        HttpStatus.INTERNAL_SERVER_ERROR
       );
     }
   }
@@ -77,7 +77,7 @@ export class AuthenticationService {
   public setCookiesAndSend(
     res: Response,
     cookies: string | string[],
-    toSend: any,
+    toSend: any
   ) {
     res.setHeader('Set-Cookie', cookies);
     return res.send(classToPlain(toSend));
@@ -93,7 +93,7 @@ export class AuthenticationService {
     const payload: TokenPayload = { userId };
     const secret = this.configService.get('JWT_ACCESS_TOKEN_SECRET');
     const expiresIn = this.configService.get(
-      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+      'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
     );
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
@@ -105,7 +105,7 @@ export class AuthenticationService {
     const payload: TokenPayload = { userId };
     const secret = this.configService.get('JWT_REFRESH_TOKEN_SECRET');
     const expiresIn = this.configService.get(
-      'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
+      'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
     );
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
@@ -124,17 +124,17 @@ export class AuthenticationService {
 
   public async verifyPassword(
     plainTextPassword: string,
-    hashedPassword: string,
+    hashedPassword: string
   ) {
     const isPasswordMatching = await bcrypt.compare(
       plainTextPassword,
-      hashedPassword,
+      hashedPassword
     );
 
     if (!isPasswordMatching) {
       throw new HttpException(
         'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
   }

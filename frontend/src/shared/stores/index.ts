@@ -1,3 +1,5 @@
 import create from 'zustand';
 
-export const useStore = create(() => ({}));
+interface GlobalState {}
+
+export const useGlobalStore = create<GlobalState>(() => ({}));
