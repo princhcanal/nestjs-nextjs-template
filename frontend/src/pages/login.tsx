@@ -32,7 +32,7 @@ const Login: NextPage = () => {
     <div>
       <h1>Login</h1>
       <Input
-        placeholder="Username"
+        placeholder="Email"
         onChange={(e) => setEmail(e.target.value)}
         value={email}
         type="email"

@@ -7,7 +7,8 @@
     "start:dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "prepare": "cd ../ && husky install ./frontend/.husky"
+    "prepare": "cd ../ && husky install ./frontend/.husky",
+    "test:e2e": "cypress open"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
@@ -46,6 +47,7 @@
     "@types/react": "17.0.24",
     "@typescript-eslint/eslint-plugin": "^4.31.2",
     "@typescript-eslint/parser": "^4.31.2",
+    "cypress": "^8.5.0",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-config-prettier": "^8.3.0",
