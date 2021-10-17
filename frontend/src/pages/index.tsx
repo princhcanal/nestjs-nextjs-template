@@ -1,18 +1,21 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
+import NextLink from 'next/link';
+import { Box, Center, Heading, Link } from '@chakra-ui/react';
 
 // TODO: use React Query instead of just axios
 const Home: NextPage = () => {
   return (
-    <div>
-      <Link href="/login">
-        <a>Login</a>
-      </Link>
-      <Link href="/register">
-        <a>Register</a>
-      </Link>
-      <h1>Hello World!</h1>
-    </div>
+    <Center w='100%' h='100vh' flexDir='column'>
+      <Heading>NextJS/NestJS Template</Heading>
+      <Box as='nav'>
+        <NextLink href='/login' passHref>
+          <Link mr='4'>Log In</Link>
+        </NextLink>
+        <NextLink href='/register' passHref>
+          <Link mr='4'>Register</Link>
+        </NextLink>
+      </Box>
+    </Center>
   );
 };
 
