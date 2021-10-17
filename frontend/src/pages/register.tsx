@@ -23,14 +23,6 @@ const Register: NextPage = () => {
     }
   };
 
-  const logout = async () => {
-    try {
-      await axios.post('/auth/logout');
-    } catch (e) {
-      throw new Error();
-    }
-  };
-
   const initialValues = { email: '', username: '', password: '' };
 
   const validationSchema = Yup.object({
