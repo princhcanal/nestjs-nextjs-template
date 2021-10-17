@@ -11,7 +11,8 @@
     "no-consecutive-blank-lines": false,
     "no-console": true,
     "no-empty-interface": false,
-    "no-unused-variables": true
+    "no-unused-variables": true,
+    "no-unused-expression": true
   },
   "jsRules": {
     "max-line-length": {
