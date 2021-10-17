@@ -23,7 +23,7 @@ const Register: NextPage = () => {
     }
   };
 
-  const logout = async () => {
+  const logoutVar = async () => {
     try {
       await axios.post('/auth/logout');
     } catch (e) {
