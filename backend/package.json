@@ -27,12 +27,12 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "prettier --write",
-      "tslint --fix"
+      "tslint --fix",
+      "prettier --write"
     ],
     "test/**/*.ts": [
-      "prettier --write",
-      "tslint --fix"
+      "tslint --fix",
+      "prettier --write"
     ],
     "*.{json,md,yaml}": [
       "prettier --write"
