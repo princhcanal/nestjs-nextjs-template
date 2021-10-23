@@ -1,0 +1,105 @@
+import { Input } from '../../../shared/components/form/Input/Input';
+import * as Yup from 'yup';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import { FormikProps, FieldProps, Field, Form, Formik } from 'formik';
+import React from 'react';
+import { Box, Button, Flex, Link } from '@chakra-ui/react';
+import { useRegister, RegisterDTO } from '../hooks/useRegister';
+
+export const RegisterForm = () => {
+  const mutation = useRegister();
+  const router = useRouter();
+
+  const onSubmit = (registerDTO: RegisterDTO) => {
+    mutation.mutate(registerDTO);
+    router.push('/');
+  };
+
+  const initialValues = { email: '', username: '', password: '' };
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email').required('Required'),
+    username: Yup.string().required('Required'),
+    password: Yup.string()
+      .min(4, 'Password must be at least 4 characters')
+      .required('Required'),
+  });
+
+  return (
+    <Box bg='gray.200' p='8' borderRadius='md' w='xl'>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {(props: FormikProps<RegisterDTO>) => (
+          <Form noValidate>
+            <Box mb='4'>
+              <Field name='username'>
+                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                  <Input
+                    fieldProps={fieldProps}
+                    name='username'
+                    label='Username'
+                    type='username'
+                    id='username'
+                    borderColor='gray.300'
+                    bgColor='gray.50'
+                    color='gray.800'
+                  />
+                )}
+              </Field>
+              <Field name='email' type='email'>
+                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                  <Input
+                    fieldProps={fieldProps}
+                    name='email'
+                    label='Email'
+                    type='email'
+                    id='email'
+                    borderColor='gray.300'
+                    bgColor='gray.50'
+                    color='gray.800'
+                  />
+                )}
+              </Field>
+              <Field name='password' type='password'>
+                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                  <Input
+                    fieldProps={fieldProps}
+                    name='password'
+                    label='Password'
+                    type='password'
+                    id='password'
+                    borderColor='gray.300'
+                    bgColor='gray.50'
+                    color='gray.800'
+                  />
+                )}
+              </Field>
+            </Box>
+            <Box mb='4'>
+              <Button
+                formNoValidate
+                type='submit'
+                isLoading={props.isSubmitting}
+                isFullWidth
+                bgColor='gray.800'
+                color='gray.50'
+                _hover={{ bgColor: 'gray.800', color: 'gray.50' }}
+              >
+                Register
+              </Button>
+            </Box>
+          </Form>
+        )}
+      </Formik>
+      <Flex justifyContent='right' color='gray.500'>
+        <NextLink href='/login' passHref>
+          <Link>Log In</Link>
+        </NextLink>
+      </Flex>
+    </Box>
+  );
+};
