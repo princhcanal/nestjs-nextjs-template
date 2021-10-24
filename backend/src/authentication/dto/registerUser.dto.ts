@@ -4,14 +4,14 @@ export class RegisterUserDTO {
   @IsEmail({}, { message: 'Invalid email' })
   @IsString()
   @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  public email: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Username is required' })
-  username: string;
+  public username: string;
 
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
   @MinLength(4)
-  password: string;
+  public password: string;
 }

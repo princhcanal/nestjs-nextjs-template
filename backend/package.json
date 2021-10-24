@@ -23,7 +23,8 @@
     "migration:generate": "npm run typeorm migration:generate -- -n",
     "migration:create": "npm run typeorm migration:create -- -n",
     "migration:revert": "npm run typeorm migration:revert",
-    "prepare": "cd ../ && husky install ./backend/.husky"
+    "prepare": "cd ../ && husky install ./backend/.husky",
+    "api:generate": "rm -rf ../frontend/src/swagger && openapi-generator-cli generate -i http://localhost:5000/api-json -g typescript-axios -o ../frontend/src/swagger --config api.json && prettier --write \"../frontend/src/swagger/**/*.ts\" && cd ../frontend && npm install generated-api"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -44,12 +45,13 @@
     }
   },
   "dependencies": {
-    "@nestjs/common": "^8.0.6",
-    "@nestjs/config": "^1.0.1",
-    "@nestjs/core": "^8.0.6",
+    "@nestjs/common": "^8.1.1",
+    "@nestjs/config": "^1.0.2",
+    "@nestjs/core": "^8.1.1",
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/passport": "^8.0.1",
-    "@nestjs/platform-express": "^8.0.6",
+    "@nestjs/platform-express": "^8.1.1",
+    "@nestjs/swagger": "^5.1.4",
     "@nestjs/typeorm": "^8.0.2",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
@@ -65,12 +67,14 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.3.0",
+    "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.37"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.1.1",
     "@nestjs/schematics": "^8.0.3",
     "@nestjs/testing": "^8.0.6",
+    "@openapitools/openapi-generator-cli": "^2.4.13",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.11.2",

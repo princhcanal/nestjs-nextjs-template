@@ -5,13 +5,14 @@ import { useRouter } from 'next/router';
 import { FormikProps, FieldProps, Field, Form, Formik } from 'formik';
 import React from 'react';
 import { Box, Button, Flex, Link } from '@chakra-ui/react';
-import { useRegister, RegisterDTO } from '../hooks/useRegister';
+import { useRegister } from '../hooks/useRegister';
+import { RegisterUserDTO } from 'generated-api';
 
 export const RegisterForm = () => {
   const mutation = useRegister();
   const router = useRouter();
 
-  const onSubmit = (registerDTO: RegisterDTO) => {
+  const onSubmit = (registerDTO: RegisterUserDTO) => {
     mutation.mutate(registerDTO);
     router.push('/');
   };
@@ -33,11 +34,11 @@ export const RegisterForm = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {(props: FormikProps<RegisterDTO>) => (
+        {(props: FormikProps<RegisterUserDTO>) => (
           <Form noValidate>
             <Box mb='4'>
               <Field name='username'>
-                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                {(fieldProps: FieldProps<string, RegisterUserDTO>) => (
                   <Input
                     fieldProps={fieldProps}
                     name='username'
@@ -51,7 +52,7 @@ export const RegisterForm = () => {
                 )}
               </Field>
               <Field name='email' type='email'>
-                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                {(fieldProps: FieldProps<string, RegisterUserDTO>) => (
                   <Input
                     fieldProps={fieldProps}
                     name='email'
@@ -65,7 +66,7 @@ export const RegisterForm = () => {
                 )}
               </Field>
               <Field name='password' type='password'>
-                {(fieldProps: FieldProps<string, RegisterDTO>) => (
+                {(fieldProps: FieldProps<string, RegisterUserDTO>) => (
                   <Input
                     fieldProps={fieldProps}
                     name='password'
