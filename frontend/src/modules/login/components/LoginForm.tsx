@@ -2,16 +2,17 @@ import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import { FormikProps, FieldProps, Field, Form, Formik } from 'formik';
 import { Input } from '../../../shared/components/form/Input/Input';
 import React from 'react';
-import { useLogin, LoginDTO } from '../hooks/useLogin';
+import { useLogin } from '../hooks/useLogin';
 import * as Yup from 'yup';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { LoginUserDTO } from 'generated-api';
 
 export const LoginForm = () => {
   const mutation = useLogin();
   const router = useRouter();
 
-  const onSubmit = async (loginDTO: LoginDTO) => {
+  const onSubmit = async (loginDTO: LoginUserDTO) => {
     mutation.mutate(loginDTO);
     router.push('/');
   };
@@ -30,11 +31,11 @@ export const LoginForm = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ isSubmitting }: FormikProps<LoginDTO>) => (
+        {({ isSubmitting }: FormikProps<LoginUserDTO>) => (
           <Form noValidate>
             <Box mb='4'>
               <Field name='email' type='email'>
-                {(fieldProps: FieldProps<string, LoginDTO>) => (
+                {(fieldProps: FieldProps<string, LoginUserDTO>) => (
                   <Input
                     fieldProps={fieldProps}
                     name='email'
@@ -48,7 +49,7 @@ export const LoginForm = () => {
                 )}
               </Field>
               <Field name='password' type='password'>
-                {(fieldProps: FieldProps<string, LoginDTO>) => (
+                {(fieldProps: FieldProps<string, LoginUserDTO>) => (
                   <Input
                     fieldProps={fieldProps}
                     name='password'

@@ -1,17 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { User } from './user.entity';
 import { RegisterUserDTO } from '../authentication/dto/registerUser.dto';
 import * as bcrypt from 'bcrypt';
+import { UserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>
   ) {}
 
-  public async findByEmail(email: string) {
+  public async findByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOne({ email });
 
     if (user) {
@@ -20,11 +21,11 @@ export class UserService {
 
     throw new HttpException(
       'User with this email does not exist',
-      HttpStatus.BAD_REQUEST,
+      HttpStatus.BAD_REQUEST
     );
   }
 
-  public async findById(id: string) {
+  public async findById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ id });
 
     if (user) {
@@ -33,17 +34,20 @@ export class UserService {
 
     throw new HttpException(
       'User with this id does not exist',
-      HttpStatus.NOT_FOUND,
+      HttpStatus.NOT_FOUND
     );
   }
 
-  public async register(userData: RegisterUserDTO) {
+  public async register(userData: RegisterUserDTO): Promise<User> {
     const newUser = this.userRepository.create(userData);
     await this.userRepository.save(newUser);
     return newUser;
   }
 
-  public async setCurrentRefreshToken(refreshToken: string, userId: string) {
+  public async setCurrentRefreshToken(
+    refreshToken: string,
+    userId: string
+  ): Promise<void> {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     await this.userRepository.update(userId, {
       currentHashedRefreshToken,
@@ -52,13 +56,13 @@ export class UserService {
 
   public async getUserIfRefreshTokenMatches(
     refreshToken: string,
-    userId: string,
-  ) {
+    userId: string
+  ): Promise<User> {
     const user = await this.findById(userId);
 
     const isRefreshTokenMatching = await bcrypt.compare(
       refreshToken,
-      user.currentHashedRefreshToken,
+      user.currentHashedRefreshToken
     );
 
     if (isRefreshTokenMatching) {
@@ -66,9 +70,21 @@ export class UserService {
     }
   }
 
-  public async deleteRefreshToken(userId: string) {
+  public async deleteRefreshToken(userId: string): Promise<UpdateResult> {
     return this.userRepository.update(userId, {
       currentHashedRefreshToken: null,
     });
+  }
+
+  public toDTO(user: User): UserDTO {
+    const userDTO: UserDTO = new UserDTO(
+      user.id,
+      user.createdAt,
+      user.updatedAt,
+      user.email,
+      user.username
+    );
+
+    return userDTO;
   }
 }

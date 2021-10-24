@@ -1,21 +1,12 @@
-import { AxiosInstance } from 'axios';
 import { useMutation } from 'react-query';
-import { useAxios } from '../../../shared/hooks/useAxios';
-
-export interface RegisterDTO {
-  username: string;
-  email: string;
-  password: string;
-}
-
-const register = async (axios: AxiosInstance, registerDTO: RegisterDTO) => {
-  await axios.post('/auth/register', registerDTO);
-};
+import { RegisterUserDTO } from 'generated-api';
+import { useContext } from 'react';
+import { ApiContext } from '../../../shared/providers/ApiProvider';
 
 export const useRegister = () => {
-  const axios = useAxios({ showToastOnError: true });
+  const api = useContext(ApiContext);
 
-  return useMutation((registerDTO: RegisterDTO) =>
-    register(axios, registerDTO)
+  return useMutation((registerDTO: RegisterUserDTO) =>
+    api.register(registerDTO)
   );
 };

@@ -8,8 +8,8 @@ import { RegisterUserDTO } from './dto/registerUser.dto';
 import { TokenPayload } from './types/tokenPayload.interface';
 import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
 import { LoginUserDTO } from './dto/loginUser.dto';
-import { classToPlain } from 'class-transformer';
 import { User } from '../user/user.entity';
+import { UserDTO } from '../user/dto/user.dto';
 
 // TODO: add authorization
 @Injectable()
@@ -20,7 +20,10 @@ export class AuthenticationService {
     private readonly configService: ConfigService
   ) {}
 
-  public async login(loginUserDTO: LoginUserDTO, res: Response) {
+  public async login(
+    loginUserDTO: LoginUserDTO,
+    res: Response
+  ): Promise<UserDTO> {
     const user = await this.getAuthenticatedUser(
       loginUserDTO.email,
       loginUserDTO.password
@@ -32,10 +35,15 @@ export class AuthenticationService {
 
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
 
-    this.setCookiesAndSend(res, [accessTokenCookie, refreshTokenCookie], user);
+    this.setCookies(res, [accessTokenCookie, refreshTokenCookie]);
+
+    return this.userService.toDTO(user);
   }
 
-  public async register(registerUserDTO: RegisterUserDTO, res: Response) {
+  public async register(
+    registerUserDTO: RegisterUserDTO,
+    res: Response
+  ): Promise<UserDTO> {
     const { email, password } = registerUserDTO;
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -45,7 +53,7 @@ export class AuthenticationService {
         password: hashedPassword,
       });
 
-      await this.login({ email, password }, res);
+      return this.login({ email, password }, res);
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new HttpException(
@@ -63,24 +71,18 @@ export class AuthenticationService {
 
   public logout(res: Response, userId: string) {
     const cookies = this.getCookiesForLogOut();
-    const message = 'Logged out successfully';
     this.userService.deleteRefreshToken(userId);
-    this.setCookiesAndSend(res, cookies, { message });
+    this.setCookies(res, cookies);
   }
 
-  public refresh(res: Response, user: User) {
+  public refresh(res: Response, user: User): UserDTO {
     const accessTokenCookie = this.getCookieWithJwtAccessToken(user.id);
-    this.setCookiesAndSend(res, accessTokenCookie, user);
+    this.setCookies(res, accessTokenCookie);
+    return this.userService.toDTO(user);
   }
 
-  // TODO: try to not use Express Response object
-  public setCookiesAndSend(
-    res: Response,
-    cookies: string | string[],
-    toSend: any
-  ) {
+  public setCookies(res: Response, cookies: string | string[]) {
     res.setHeader('Set-Cookie', cookies);
-    return res.send(classToPlain(toSend));
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
