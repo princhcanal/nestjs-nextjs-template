@@ -2,7 +2,6 @@ import type { NextPage } from 'next';
 import NextLink from 'next/link';
 import { Box, Center, Heading, Link } from '@chakra-ui/react';
 
-// TODO: use React Query instead of just axios
 const Home: NextPage = () => {
   return (
     <Center w='100%' h='100vh' flexDir='column'>
