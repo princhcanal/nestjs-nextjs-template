@@ -2,7 +2,7 @@ import { createContext, ReactNode } from 'react';
 import { useAxios } from '../hooks/useAxios';
 import { DefaultApi } from 'generated-api';
 
-const baseURL = process.env.BASE_URL || 'http://localhost:5000';
+const baseURL = process.env.BASE_URL || 'http://localhost:3000';
 
 interface ApiProviderProps {
   children: ReactNode;

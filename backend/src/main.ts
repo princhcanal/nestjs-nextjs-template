@@ -12,9 +12,7 @@ import {
 // import * as csurf from 'csurf';
 
 async function bootstrap() {
-  const origin = process.env.ORIGIN || 'http://localhost:3000';
   const app = await NestFactory.create(AppModule);
-  app.enableCors({ origin, credentials: true });
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
