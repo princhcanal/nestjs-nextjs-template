@@ -10,4 +10,4 @@ _Provide a description on what was changed/added/fixed in this PR_
 
 _Backend only_
 
-- [ ] I generated the client api
+- [ ] Generate the client api (if there are new endpoints and/or DTOs)
