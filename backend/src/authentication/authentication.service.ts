@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
@@ -56,16 +60,12 @@ export class AuthenticationService {
       return this.login({ email, password }, res);
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
-        throw new HttpException(
-          'User with that username or email already exists',
-          HttpStatus.BAD_REQUEST
+        throw new BadRequestException(
+          'User with that username or email already exists'
         );
       }
 
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR
-      );
+      throw new InternalServerErrorException('Something went wrong');
     }
   }
 
@@ -134,10 +134,7 @@ export class AuthenticationService {
     );
 
     if (!isPasswordMatching) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST
-      );
+      throw new BadRequestException('Wrong credentials provided');
     }
   }
 }
