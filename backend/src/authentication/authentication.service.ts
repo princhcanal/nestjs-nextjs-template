@@ -15,7 +15,6 @@ import { LoginUserDTO } from './dto/loginUser.dto';
 import { User } from '../user/user.entity';
 import { UserDTO } from '../user/dto/user.dto';
 
-// TODO: add authorization
 @Injectable()
 export class AuthenticationService {
   constructor(

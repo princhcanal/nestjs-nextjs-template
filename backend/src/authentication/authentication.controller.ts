@@ -21,11 +21,15 @@ import { UserDTO } from '../user/dto/user.dto';
 @Controller(AuthenticationController.AUTH_API_ROUTE)
 export class AuthenticationController {
   public static readonly AUTH_API_ROUTE = '/auth';
+  public static readonly REGISTER_API_ROUTE = '/register';
+  public static readonly LOGIN_API_ROUTE = '/login';
+  public static readonly LOGOUT_API_ROUTE = '/logout';
+  public static readonly REFRESH_API_ROUTE = '/refresh';
 
   constructor(private readonly authenticationService: AuthenticationService) {}
 
   @ApiBody({ type: RegisterUserDTO })
-  @Post('register')
+  @Post(AuthenticationController.REGISTER_API_ROUTE)
   public register(
     @Body() registerUserDTO: RegisterUserDTO,
     @Res({ passthrough: true }) res: Response
@@ -35,7 +39,7 @@ export class AuthenticationController {
 
   @HttpCode(200)
   @ApiBody({ type: LoginUserDTO })
-  @Post('login')
+  @Post(AuthenticationController.LOGIN_API_ROUTE)
   public logIn(
     @Body() loginUserDTO: LoginUserDTO,
     @Res({ passthrough: true }) res: Response
@@ -45,13 +49,13 @@ export class AuthenticationController {
 
   @HttpCode(200)
   @UseGuards(JwtAuthenticationGuard)
-  @Post('logout')
+  @Post(AuthenticationController.LOGOUT_API_ROUTE)
   public logOut(@Req() req: RequestWithUser, @Res() res: Response): void {
     this.authenticationService.logout(res, req.user.id);
   }
 
   @UseGuards(JwtRefreshGuard)
-  @Get('refresh')
+  @Get(AuthenticationController.REFRESH_API_ROUTE)
   public refresh(@Req() req: RequestWithUser, @Res() res: Response): UserDTO {
     return this.authenticationService.refresh(res, req.user);
   }
