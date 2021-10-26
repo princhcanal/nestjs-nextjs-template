@@ -7,7 +7,7 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import { User } from '../user/user.entity';
-import { Action } from './action.enum';
+import { Action } from './types/action.enum';
 
 type Subjects = InferSubjects<typeof User> | 'all';
 
