@@ -1,4 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, UpdateResult } from 'typeorm';
 import { User } from './user.entity';
@@ -19,10 +23,7 @@ export class UserService {
       return user;
     }
 
-    throw new HttpException(
-      'User with this email does not exist',
-      HttpStatus.BAD_REQUEST
-    );
+    throw new BadRequestException('User with this email does not exist');
   }
 
   public async findById(id: string): Promise<User> {
@@ -32,10 +33,7 @@ export class UserService {
       return user;
     }
 
-    throw new HttpException(
-      'User with this id does not exist',
-      HttpStatus.NOT_FOUND
-    );
+    throw new NotFoundException('User with this id does not exist');
   }
 
   public async register(userData: RegisterUserDTO): Promise<User> {

@@ -64,7 +64,7 @@ class TestEnvironment extends NodeEnvironment {
     this.global.request = request(app.getHttpServer());
 
     this.global.transactionalContext = new TransactionalTestContext(
-      getConnection(),
+      getConnection()
     );
   }
 
@@ -77,6 +77,7 @@ class TestEnvironment extends NodeEnvironment {
     return super.getVmContext();
   }
 
+  // TODO: log in before all tests
   async handleTestEvent(event, state) {
     if (event.name === 'test_start') {
       // Start transaction
