@@ -28,11 +28,11 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint --fix",
+      "tslint --project tsconfig.json --fix",
       "prettier --write"
     ],
     "test/**/*.ts": [
-      "tslint --fix",
+      "tslint --project tsconfig.json --fix",
       "prettier --write"
     ],
     "*.{json,md,yaml}": [
