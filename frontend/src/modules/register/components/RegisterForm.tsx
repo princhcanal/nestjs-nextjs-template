@@ -1,8 +1,7 @@
 import { Input } from '../../../shared/components/form/Input/Input';
 import * as Yup from 'yup';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import { FormikProps, FieldProps, Field, Form, Formik } from 'formik';
+import { FieldProps, Field, Form, Formik } from 'formik';
 import React from 'react';
 import { Box, Button, Flex, Link } from '@chakra-ui/react';
 import { useRegister } from '../hooks/useRegister';
@@ -10,11 +9,9 @@ import { RegisterUserDTO } from 'generated-api';
 
 export const RegisterForm = () => {
   const mutation = useRegister();
-  const router = useRouter();
 
   const onSubmit = (registerDTO: RegisterUserDTO) => {
     mutation.mutate(registerDTO);
-    router.push('/');
   };
 
   const initialValues = { email: '', username: '', password: '' };
@@ -34,7 +31,7 @@ export const RegisterForm = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {(props: FormikProps<RegisterUserDTO>) => (
+        {() => (
           <Form noValidate>
             <Box mb='4'>
               <Field name='username'>
@@ -82,9 +79,10 @@ export const RegisterForm = () => {
             </Box>
             <Box mb='4'>
               <Button
+                dataCy='register-submit-btn'
                 formNoValidate
                 type='submit'
-                isLoading={props.isSubmitting}
+                isLoading={mutation.isLoading}
                 isFullWidth
                 bgColor='gray.800'
                 color='gray.50'

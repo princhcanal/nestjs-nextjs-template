@@ -1,20 +1,17 @@
 import { Box, Button, Flex, Link } from '@chakra-ui/react';
-import { FormikProps, FieldProps, Field, Form, Formik } from 'formik';
+import { FieldProps, Field, Form, Formik } from 'formik';
 import { Input } from '../../../shared/components/form/Input/Input';
 import React from 'react';
 import { useLogin } from '../hooks/useLogin';
 import * as Yup from 'yup';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { LoginUserDTO } from 'generated-api';
 
 export const LoginForm = () => {
   const mutation = useLogin();
-  const router = useRouter();
 
   const onSubmit = async (loginDTO: LoginUserDTO) => {
     mutation.mutate(loginDTO);
-    router.push('/');
   };
 
   const initialValues = { email: '', password: '' };
@@ -31,7 +28,7 @@ export const LoginForm = () => {
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
-        {({ isSubmitting }: FormikProps<LoginUserDTO>) => (
+        {() => (
           <Form noValidate>
             <Box mb='4'>
               <Field name='email' type='email'>
@@ -65,9 +62,10 @@ export const LoginForm = () => {
             </Box>
             <Box mb='4'>
               <Button
+                dataCy='login-submit-btn'
                 formNoValidate
                 type='submit'
-                isLoading={isSubmitting}
+                isLoading={mutation.isLoading}
                 isFullWidth
                 bgColor='gray.800'
                 color='gray.50'

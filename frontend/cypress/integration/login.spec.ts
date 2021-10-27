@@ -1,24 +1,44 @@
 describe('Login Form', () => {
-  before(() => {
+  beforeEach(() => {
     cy.visit('/login');
+    cy.intercept('/api/v1/auth/login').as('login');
   });
 
-  it('should have email and password fields and submit button', () => {
+  it('should successfully log in', () => {
     cy.get('input').first().should('have.attr', 'name', 'email');
     cy.get('input').first().should('have.attr', 'type', 'email');
+    cy.get('input').first().type('test@test.com');
 
     cy.get('input').eq(1).should('have.attr', 'name', 'password');
     cy.get('input').eq(1).should('have.attr', 'type', 'password');
+    cy.get('input').eq(1).type('test');
 
-    cy.get('button').first().contains('Log In').should('exist');
+    cy.get('[dataCy="login-submit-btn"]').should('exist').click();
+    cy.wait('@login');
+
+    cy.get('[dataCy="home"]').contains('Home').should('exist');
   });
 
-  // TODO: implement test
-  it('should show errors when fields are empty', () => {});
+  it('should show errors when fields are empty', () => {
+    cy.get('[dataCy="login-submit-btn"]').click();
 
-  // TODO: implement test
-  it('should show errors when email field is wrong', () => {});
+    cy.get('.chakra-form__error-message')
+      .eq(0)
+      .contains('Required')
+      .should('exist');
 
-  // TODO: implement test
-  it('should successfully log in', () => {});
+    cy.get('.chakra-form__error-message')
+      .eq(1)
+      .contains('Required')
+      .should('exist');
+  });
+
+  it('should show error if email is invalid', () => {
+    cy.get('input').first().type('test');
+    cy.get('input').first().blur();
+
+    cy.get('.chakra-form__error-message')
+      .contains('Invalid email')
+      .should('exist');
+  });
 });
