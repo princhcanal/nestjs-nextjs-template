@@ -2,10 +2,11 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { RegisterUserDTO } from './dto/registerUser.dto';
@@ -74,7 +75,16 @@ export class AuthenticationService {
     this.setCookies(res, cookies);
   }
 
-  public refresh(res: Response, user: User): UserDTO {
+  public async refresh(req: Request, res: Response): Promise<UserDTO> {
+    const refreshToken = req.cookies?.Refresh;
+    if (!refreshToken) throw new UnauthorizedException();
+    const payload = this.jwtService.decode(refreshToken) as TokenPayload;
+
+    const user = await this.userService.getUserIfRefreshTokenMatches(
+      refreshToken,
+      payload.userId
+    );
+
     const accessTokenCookie = this.getCookieWithJwtAccessToken(user.id);
     this.setCookies(res, accessTokenCookie);
     return this.userService.toDTO(user);
