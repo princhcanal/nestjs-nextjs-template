@@ -11,12 +11,16 @@
     "no-consecutive-blank-lines": false,
     "no-console": true,
     "no-empty-interface": false,
-    "no-unused-variable": true,
-    "no-unused-expression": true
+    "no-unused-expression": true,
+    "no-async-without-await": true,
+    "no-unused-variable": true
   },
   "jsRules": {
     "max-line-length": {
       "options": [120]
     }
+  },
+  "linterOptions": {
+    "exclude": ["src/swagger/**/*"]
   }
 }
