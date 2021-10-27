@@ -46,11 +46,20 @@ export const useAxios = ({
         }
       }
     },
-    (e: any) => {
+    async (e: any) => {
       if (e) {
-        if (showToastOnError) {
-          const { message } = e.response.data;
+        const { message, retryWithRefreshToken } = e.response.data;
 
+        if (retryWithRefreshToken) {
+          try {
+            e.config._retry = true;
+            await axios.get('/auth/refresh');
+            return axios(e.config);
+            // tslint:disable:no-empty
+          } catch (e) {}
+        }
+
+        if (showToastOnError) {
           let description = '';
 
           if (message) {
