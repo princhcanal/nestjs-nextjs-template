@@ -45,6 +45,8 @@ export const useAxios = ({
           });
         }
       }
+
+      return res;
     },
     async (e: any) => {
       if (e) {
@@ -75,6 +77,8 @@ export const useAxios = ({
             variant: 'subtle',
           });
         }
+
+        Promise.reject(e);
       }
     }
   );

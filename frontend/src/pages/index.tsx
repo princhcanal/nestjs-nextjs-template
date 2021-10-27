@@ -1,29 +1,19 @@
 import type { NextPage } from 'next';
-import NextLink from 'next/link';
-import { Box, Center, Heading, Link, Button } from '@chakra-ui/react';
-import { useContext } from 'react';
-import { useMutation } from 'react-query';
-import { ApiContext } from '../shared/providers/ApiProvider';
+import { useGlobalStore } from '../shared/stores';
+import { Landing } from '../modules/index/components/Landing';
+import { Home } from '../modules/index/components/Home';
+import { useEffect, useState } from 'react';
+import { UserDTO } from 'generated-api';
 
-const Home: NextPage = () => {
-  const api = useContext(ApiContext);
+const Index: NextPage = () => {
+  const [user, setUser] = useState<UserDTO | undefined>();
+  const getUser = useGlobalStore((state) => state.getUser);
 
-  const mutation = useMutation(() => api.logOut());
+  useEffect(() => {
+    setUser(getUser());
+  }, [getUser]);
 
-  return (
-    <Center w='100%' h='100vh' flexDir='column'>
-      <Heading>NextJS/NestJS Template</Heading>
-      <Box as='nav'>
-        <NextLink href='/login' passHref>
-          <Link mr='4'>Log In</Link>
-        </NextLink>
-        <NextLink href='/register' passHref>
-          <Link mr='4'>Register</Link>
-        </NextLink>
-        <Button onClick={() => mutation.mutate()}>Log Out</Button>
-      </Box>
-    </Center>
-  );
+  return user ? <Home /> : <Landing />;
 };
 
-export default Home;
+export default Index;
