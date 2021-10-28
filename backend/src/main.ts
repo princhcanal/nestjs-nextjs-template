@@ -15,8 +15,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // TODO: find better way to restrict origins
   app.enableCors({
-    origin:
-      'https://nestjs-nextjs-template-git-feature-templ-30-setup-fdd25f-princh.vercel.app',
+    origin: '^https://nestjs-nextjs-template-git-',
     credentials: true,
   });
   // const baseClientUrl = process.env.BASE_CLIENT_URL;
