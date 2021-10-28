@@ -2,7 +2,15 @@ import { createContext, ReactNode } from 'react';
 import { useAxios } from '../hooks/useAxios';
 import { DefaultApi } from 'generated-api';
 
-const baseURL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+let reviewAppUrl;
+
+if (process.env.VERCEL_GIT_IS_PULL_REQUEST === '1') {
+  const prNumber = process.env.VERCEL_GIT_PULL_REQUEST_NUMBER;
+  reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com`;
+}
+
+const baseURL =
+  process.env.NEXT_PUBLIC_BASE_URL || reviewAppUrl || 'http://localhost:3000';
 
 interface ApiProviderProps {
   children: ReactNode;
