@@ -13,6 +13,11 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const origin = process.env.BASE_CLIENT_URL;
+
+  if (origin) {
+    app.enableCors({ origin, credentials: true });
+  }
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
