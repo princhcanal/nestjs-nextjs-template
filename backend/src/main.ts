@@ -13,15 +13,17 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const baseClientUrl = process.env.BASE_CLIENT_URL;
-  const branch = process.env.HEROKU_BRANCH.replace('/', '-');
+  // TODO: find better way to restrict origins
+  app.enableCors({ credentials: true });
+  // const baseClientUrl = process.env.BASE_CLIENT_URL;
+  // const branch = process.env.HEROKU_BRANCH.replace('/', '-');
 
-  if (baseClientUrl) {
-    app.enableCors({ origin: baseClientUrl, credentials: true });
-  } else if (branch) {
-    const origin = `https://nestjs-nextjs-template-git-${branch}-princh.vercel.app`;
-    app.enableCors({ origin, credentials: true });
-  }
+  // if (baseClientUrl) {
+  //   app.enableCors({ origin: baseClientUrl, credentials: true });
+  // } else if (branch) {
+  //   const origin = `https://nestjs-nextjs-template-git-${branch}-princh.vercel.app`;
+  //   app.enableCors({ origin, credentials: true });
+  // }
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
