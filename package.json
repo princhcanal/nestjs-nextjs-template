@@ -10,7 +10,7 @@
     "start:dev:frontend": "npm run start:dev --prefix frontend",
     "start:prod:backend": "npm run start:prod --prefix backend",
     "migration": "npm run migration --prefix backend",
-    "heroku-prebuild": "npm install @nestjs/cli && cd backend && npm install"
+    "heroku-prebuild": "npm install @nestjs/cli supertest @types/supertest && cd backend && npm install"
   },
   "repository": {
     "type": "git",
