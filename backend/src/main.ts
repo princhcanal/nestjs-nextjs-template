@@ -14,8 +14,10 @@ import {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const baseClientUrl = process.env.BASE_CLIENT_URL;
-  const branch = process.env.HEROKU_BRANCH.replace('/', '-');
+  const branch = process.env.HEROKU_BRANCH.toLowerCase().replace('/', '-');
 
+  // tslint:disable:no-console
+  console.log(baseClientUrl);
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
   } else if (branch) {
