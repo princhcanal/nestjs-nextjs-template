@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// TODO: get pr number
 let reviewAppUrl;
 
 if (process.env.VERCEL_GIT_IS_PULL_REQUEST === '1') {
@@ -7,7 +8,7 @@ if (process.env.VERCEL_GIT_IS_PULL_REQUEST === '1') {
   reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com`;
 }
 
-reviewAppUrl = `https://nest-next-template-pr-${26}.herokuapp.com`;
+reviewAppUrl = `https://nest-next-template-pr-${28}.herokuapp.com`;
 
 const baseURL =
   process.env.NEXT_PUBLIC_BASE_URL ||

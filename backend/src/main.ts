@@ -11,6 +11,8 @@ import {
 } from '@nestjs/swagger';
 // import * as csurf from 'csurf';
 
+// TODO: enable cors for review apps (try short branch name)
+// FIXME: cookies not setting in production
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const baseClientUrl = process.env.BASE_CLIENT_URL;
