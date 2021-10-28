@@ -13,9 +13,13 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const origin = process.env.BASE_CLIENT_URL;
+  const baseClientUrl = process.env.BASE_CLIENT_URL;
+  const branch = process.env.HEROKU_BRANCH.replace('/', '-');
 
-  if (origin) {
+  if (baseClientUrl) {
+    app.enableCors({ origin: baseClientUrl, credentials: true });
+  } else if (branch) {
+    const origin = `https://nestjs-nextjs-template-git-${branch}-princh.vercel.app`;
     app.enableCors({ origin, credentials: true });
   }
 
