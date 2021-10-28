@@ -20,9 +20,6 @@ async function bootstrap() {
     branch = branch.toLowerCase().replace('/', '-');
   }
 
-  // tslint:disable:no-console
-  console.log('baseClientUrl:', baseClientUrl);
-  console.log('branch:', branch);
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
   } else if (branch) {
