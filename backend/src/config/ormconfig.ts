@@ -12,6 +12,9 @@ const config: TypeOrmModuleOptions = {
   cli: {
     migrationsDir: __dirname + '/../database/migrations',
   },
+  ssl: {
+    rejectUnauthorized: false,
+  },
 };
 
 export = config;
