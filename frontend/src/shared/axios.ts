@@ -7,10 +7,6 @@ if (process.env.NEXT_PUBLIC_VERCEL_GIT_IS_PULL_REQUEST === '1') {
   reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com`;
 }
 
-// tslint:disable:no-console
-console.log('vercel_url:', process.env.VERCEL_URL);
-console.log('next_public_vercel_url:', process.env.NEXT_PUBLIC_VERCEL_URL);
-
 const baseURL =
   process.env.NEXT_PUBLIC_BASE_URL ||
   reviewAppUrl ||
