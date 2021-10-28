@@ -14,7 +14,7 @@ import {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // TODO: find better way to restrict origins
-  app.enableCors({ credentials: true });
+  app.enableCors({ origin: '*', credentials: true });
   // const baseClientUrl = process.env.BASE_CLIENT_URL;
   // const branch = process.env.HEROKU_BRANCH.replace('/', '-');
 
