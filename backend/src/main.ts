@@ -14,7 +14,10 @@ import {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // TODO: find better way to restrict origins
-  app.enableCors({ origin: '*', credentials: true });
+  app.enableCors({
+    origin: 'https://nestjs-nextjs-template-git-*',
+    credentials: true,
+  });
   // const baseClientUrl = process.env.BASE_CLIENT_URL;
   // const branch = process.env.HEROKU_BRANCH.replace('/', '-');
 
