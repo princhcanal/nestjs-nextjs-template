@@ -7,7 +7,9 @@
     "start:dev": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:dev:frontend\"",
     "start:dev:backend": "npm run start:dev --prefix backend",
     "test:backend": "npm run test:e2e --prefix backend",
-    "start:dev:frontend": "npm run start:dev --prefix frontend"
+    "start:dev:frontend": "npm run start:dev --prefix frontend",
+    "start:prod:backend": "npm run start:prod --prefix backend",
+    "migration": "npm run migration --prefix backend"
   },
   "repository": {
     "type": "git",
