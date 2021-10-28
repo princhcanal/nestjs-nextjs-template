@@ -45,7 +45,7 @@ export class AuthenticationController {
     @Res({ passthrough: true }) res: Response
   ): Promise<UserDTO> {
     // tslint:disable:no-console
-    console.log(req.originalUrl);
+    console.log('originUrl:', req.originalUrl);
     return this.authenticationService.login(loginUserDTO, res);
   }
 
