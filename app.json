@@ -1,0 +1,12 @@
+{
+  "name": "NestJS/NextJS Template",
+  "description": "A fullstack template using NestJS and NextJS",
+  "repository": "https://github.com/princhcanal/nestjs-nextjs-template",
+  "website": "https://nestjs-nextjs-template.herokuapp.com",
+  "addons": ["heroku-postgresql:hobby-dev"],
+  "environments": {
+    "review": {
+      "addons": ["heroku-postgresql:hobby-dev"]
+    }
+  }
+}
