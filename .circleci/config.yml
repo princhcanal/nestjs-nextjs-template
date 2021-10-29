@@ -16,6 +16,12 @@ jobs:
       - run:
           name: Run backend tests
           command: npm run test:backend
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./reports/junit/
+      - store_artifacts:
+          path: ./reports/junit
 workflows:
   test:
     jobs:
