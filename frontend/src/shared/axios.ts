@@ -2,28 +2,16 @@ import axios from 'axios';
 
 let reviewAppUrl;
 
-if (process.env.VERCEL_GIT_IS_PULL_REQUEST === '1') {
-  const prNumber = process.env.VERCEL_GIT_PULL_REQUEST_NUMBER;
-  reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com`;
+if (process.env.NEXT_PUBLIC_VERCEL_GIT_IS_PULL_REQUEST === '1') {
+  const prNumber = process.env.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_NUMBER;
+  reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com/api/v1`;
 }
 
-reviewAppUrl = `https://nest-next-template-pr-${26}.herokuapp.com`;
+const suffix = '/api/v1';
+const publicBaseUrl =
+  process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL + suffix;
 
-const baseURL =
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  reviewAppUrl ||
-  'http://localhost:3000/api/v1';
-
-// tslint:disable:no-console
-console.log('axios.ts');
-// tslint:disable:no-console
-console.log('is pr:', process.env.VERCEL_GIT_IS_PULL_REQUEST);
-// tslint:disable:no-console
-console.log('pr number:', process.env.VERCEL_GIT_PULL_REQUEST_NUMBER);
-// tslint:disable:no-console
-console.log('reviewAppUrl:', reviewAppUrl);
-// tslint:disable:no-console
-console.log('next public url:', process.env.NEXT_PUBLIC_BASE_URL);
+const baseURL = publicBaseUrl || reviewAppUrl || 'http://localhost:3000/api/v1';
 
 export const axiosInstance = axios.create({
   baseURL,
