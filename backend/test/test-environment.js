@@ -23,6 +23,7 @@ class TestEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
 
+    jest.setTimeout();
     this.global.container = await new PostgreSqlContainer().start();
 
     const moduleFixture = await Test.createTestingModule({

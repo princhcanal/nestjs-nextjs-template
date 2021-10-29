@@ -21,6 +21,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
+    "test:unit": "jest --config jest-unit.config.ts --ci --runInBand --reporters=default --reporters=jest-junit",
+    "test:unit:ci": "jest --config jest-unit.config.ts",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js --config src/config/ormconfig.ts",
     "migration": "npm run typeorm migration:run",
     "migration:generate": "npm run typeorm migration:generate -- -n",

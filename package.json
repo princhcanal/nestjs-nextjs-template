@@ -8,6 +8,7 @@
     "start:dev:backend": "npm run start:dev --prefix backend",
     "test:backend": "npm run test --prefix backend",
     "test:backend:ci": "npm run test:ci --prefix backend",
+    "test:backend:unit:ci": "npm run test:unit:ci --prefix backend",
     "start:dev:frontend": "npm run start:dev --prefix frontend",
     "test:frontend:e2e": "npm run test:e2e --prefix frontend",
     "start:prod:backend": "npm run start:prod --prefix backend",
