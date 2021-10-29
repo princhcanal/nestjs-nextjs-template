@@ -13,7 +13,7 @@
     "test:frontend:e2e": "npm run test:e2e --prefix frontend",
     "start:prod:backend": "npm run start:prod --prefix backend",
     "migration": "npm run migration --prefix backend",
-    "heroku-prebuild": "npm install @nestjs/cli supertest @types/supertest ts-node && cd backend && npm install",
+    "heroku-prebuild": "npm install @nestjs/cli supertest @types/supertest ts-node @jest/types && cd backend && npm install",
     "postinstall": "cd frontend && npm install && cd ../backend && npm install"
   },
   "repository": {
