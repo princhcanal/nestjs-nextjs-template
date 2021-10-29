@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Install node
-          command: sudo apt install npm nodejs && npm config set strict-ssl false
+          command: sudo apt install npm nodejs && npm config set strict-ssl false && npm install npm -g
       - run:
           name: Install backend dependencies
           command: cd backend && npm install
