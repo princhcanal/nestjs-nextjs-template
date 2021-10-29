@@ -14,6 +14,6 @@ jobs:
       - run:
           command: npm run test:backend
 workflows:
-  build-and-test:
+  test:
     jobs:
       - test-backend
