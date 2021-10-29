@@ -1,4 +1,5 @@
 version: 2.1
+machine: true
 orbs:
   node: circleci/node@3.0.0
 jobs:
