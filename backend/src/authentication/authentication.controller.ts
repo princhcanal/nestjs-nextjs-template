@@ -41,8 +41,12 @@ export class AuthenticationController {
   @Post(AuthenticationController.LOGIN_API_ROUTE)
   public logIn(
     @Body() loginUserDTO: LoginUserDTO,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserDTO> {
+    // tslint:disable:no-console
+    console.log('headers:', req.headers);
+    console.log('referer:', req.headers.referer);
     return this.authenticationService.login(loginUserDTO, res);
   }
 
