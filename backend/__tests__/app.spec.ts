@@ -1,7 +1,3 @@
-/**
- * @jest-environment ./test-environment
- */
-
 const request = global.request;
 
 describe('App Controller', () => {
