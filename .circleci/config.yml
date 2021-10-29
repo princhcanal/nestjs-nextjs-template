@@ -6,6 +6,8 @@ jobs:
     executor:
       name: node/default
     steps:
+      - setup_remote_docker:
+          version: 19.03.13
       - checkout
       - node/install-packages
       - run:

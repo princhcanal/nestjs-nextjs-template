@@ -27,7 +27,5 @@
   "devDependencies": {
     "concurrently": "^6.2.1"
   },
-  "dependencies": {
-    "@casl/ability": "^5.4.3"
-  }
+  "dependencies": {}
 }
