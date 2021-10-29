@@ -23,8 +23,6 @@ export class AuthenticationService {
     private readonly configService: ConfigService
   ) {}
 
-  private domain = process.env.NODE_ENV === 'production' ? '.vercel.app' : '';
-
   public async login(
     loginUserDTO: LoginUserDTO,
     res: Response
@@ -110,7 +108,7 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    return `Authorization=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; Domain=${this.domain}; SameSite=None; Secure`;
+    return `Authorization=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None; Secure`;
   }
 
   public getCookieWithRefreshToken(userId: string) {
@@ -122,15 +120,15 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; Domain=${this.domain}; SameSite=None; Secure`;
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None; Secure`;
 
     return { cookie, token };
   }
 
   public getCookiesForLogOut() {
     return [
-      `Authorization=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Domain=${this.domain}; Secure`,
-      `Refresh=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Domain=${this.domain}; Secure`,
+      `Authorization=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure`,
+      `Refresh=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure`,
     ];
   }
 
