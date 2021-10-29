@@ -41,7 +41,6 @@ export class AuthenticationController {
   @Post(AuthenticationController.LOGIN_API_ROUTE)
   public logIn(
     @Body() loginUserDTO: LoginUserDTO,
-    @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ): Promise<UserDTO> {
     return this.authenticationService.login(loginUserDTO, res);

@@ -23,7 +23,7 @@ export class AuthenticationService {
     private readonly configService: ConfigService
   ) {}
 
-  private domain = process.env.NODE_ENV === 'production' ? 'vercel.app' : '';
+  private domain = process.env.NODE_ENV === 'production' ? '.vercel.app' : '';
 
   public async login(
     loginUserDTO: LoginUserDTO,

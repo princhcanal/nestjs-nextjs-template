@@ -10,6 +10,7 @@ _First, create a draft pull request. Then delete any item in the checklist that 
 - [ ] Commented on code that is hard to undertand
 - [ ] Implemented tests for the feature/bugfix
 - [ ] All GitHub status checks pass
+- [ ] The frontend and backend PR previews have been deployed
 
 _Backend only_
 
