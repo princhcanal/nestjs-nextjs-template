@@ -25,7 +25,12 @@ async function bootstrap() {
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
   } else {
-    app.enableCors();
+    app.enableCors({
+      origin: (origin, callback) => {
+        callback(undefined, origin);
+      },
+      credentials: true,
+    });
   }
   /*else if (branch) {
     const origin =
