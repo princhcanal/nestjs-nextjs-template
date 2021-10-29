@@ -1,7 +1,3 @@
-/**
- * @jest-environment ./test-environment
- */
-
 import { AuthenticationController } from '../../src/authentication/authentication.controller';
 
 const request = global.request;

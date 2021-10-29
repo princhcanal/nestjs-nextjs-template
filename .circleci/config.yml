@@ -14,7 +14,7 @@ jobs:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
       - run:
-          name: Run backend tests
+          name: Run backend unit tests
           command: npm run test:backend:unit:ci
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
@@ -22,7 +22,28 @@ jobs:
           path: ./backend/reports/junit/
       - store_artifacts:
           path: ./backend/reports/junit
+  test-frontend:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - run:
+          name: Install frontend dependencies
+          command: cd frontend && npm install
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run frontend unit tests
+          command: npm run test:frontend:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./frontend/reports/junit/
+      - store_artifacts:
+          path: ./frontend/reports/junit
 workflows:
   test:
     jobs:
       - test-backend
+      - test-frontend
