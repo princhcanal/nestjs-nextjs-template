@@ -25,7 +25,8 @@ async function bootstrap() {
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
   } else if (branch) {
-    const origin = `https://nestjs-nextjs-template-git-${branch}-princh.vercel.app`;
+    const origin =
+      /https:\/\/nestjs\-nextjs\-template\-git\-.*\-princh\.vercel\.app\//;
     app.enableCors({ origin, credentials: true });
   }
 
