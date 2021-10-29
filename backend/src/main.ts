@@ -11,20 +11,15 @@ import {
 } from '@nestjs/swagger';
 // import * as csurf from 'csurf';
 
-// TODO: enable cors for review apps (try short branch name)
 // FIXME: cookies not setting in production
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const baseClientUrl = process.env.BASE_CLIENT_URL;
-  let branch = process.env.HEROKU_BRANCH;
-
-  if (branch) {
-    branch = branch.toLowerCase().replace('/', '-');
-  }
+  const branch = process.env.HEROKU_BRANCH;
 
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
-  } else {
+  } else if (branch) {
     app.enableCors({
       origin: (origin, callback) => {
         callback(undefined, origin);
@@ -32,11 +27,6 @@ async function bootstrap() {
       credentials: true,
     });
   }
-  /*else if (branch) {
-    const origin =
-      /https:\/\/nestjs\-nextjs\-template\-git\-.*\-princh\.vercel\.app\//;
-    app.enableCors({ origin, credentials: true });
-  }*/
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
