@@ -9,7 +9,8 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - checkout
-      - node/install-packages
+      - run:
+          command: cd backend && npm install
       - run:
           command: npm run test:backend
 workflows:
