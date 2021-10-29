@@ -6,8 +6,9 @@
   "scripts": {
     "start:dev": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:dev:frontend\"",
     "start:dev:backend": "npm run start:dev --prefix backend",
-    "test:backend": "npm run test:e2e --prefix backend",
+    "test:backend": "npm run test --prefix backend",
     "start:dev:frontend": "npm run start:dev --prefix frontend",
+    "test:frontend:e2e": "npm run test:e2e --prefix frontend",
     "start:prod:backend": "npm run start:prod --prefix backend",
     "migration": "npm run migration --prefix backend",
     "heroku-prebuild": "npm install @nestjs/cli supertest @types/supertest ts-node && cd backend && npm install"
