@@ -24,11 +24,12 @@ async function bootstrap() {
 
   if (baseClientUrl) {
     app.enableCors({ origin: baseClientUrl, credentials: true });
-  } else if (branch) {
+  }
+  /*else if (branch) {
     const origin =
       /https:\/\/nestjs\-nextjs\-template\-git\-.*\-princh\.vercel\.app\//;
     app.enableCors({ origin, credentials: true });
-  }
+  }*/
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
