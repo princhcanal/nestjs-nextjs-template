@@ -13,14 +13,14 @@ describe('Login Form', () => {
     cy.get('input').eq(1).should('have.attr', 'type', 'password');
     cy.get('input').eq(1).type('test');
 
-    cy.get('[dataCy="login-submit-btn"]').should('exist').click();
+    cy.get('[data-cy="login-submit-btn"]').should('exist').click();
     cy.wait('@login');
 
-    cy.get('[dataCy="home"]').contains('Home').should('exist');
+    cy.get('[data-cy="home"]').contains('Home').should('exist');
   });
 
   it('should show errors when fields are empty', () => {
-    cy.get('[dataCy="login-submit-btn"]').click();
+    cy.get('[data-cy="login-submit-btn"]').click();
 
     cy.get('.chakra-form__error-message')
       .eq(0)

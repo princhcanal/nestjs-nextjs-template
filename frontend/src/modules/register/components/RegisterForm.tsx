@@ -40,7 +40,7 @@ export const RegisterForm = () => {
                     fieldProps={fieldProps}
                     name='username'
                     label='Username'
-                    type='username'
+                    type='text'
                     id='username'
                     borderColor='gray.300'
                     bgColor='gray.50'
@@ -79,7 +79,7 @@ export const RegisterForm = () => {
             </Box>
             <Box mb='4'>
               <Button
-                dataCy='register-submit-btn'
+                data-cy='register-submit-btn'
                 formNoValidate
                 type='submit'
                 isLoading={mutation.isLoading}
