@@ -23,9 +23,7 @@ class TestEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
 
-    console.log('HELLO TEST ENVIRONMENT');
     this.global.container = await new PostgreSqlContainer().start();
-    console.log('Container:', this.global.container);
 
     const moduleFixture = await Test.createTestingModule({
       imports: [
