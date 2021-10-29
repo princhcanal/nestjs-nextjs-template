@@ -12,6 +12,6 @@ _First, create a draft pull request. Then delete any item in the checklist that 
 - [ ] All GitHub status checks pass
 - [ ] The frontend and backend PR previews have been deployed
 
-_Backend only_
+**Backend only**
 
 - [ ] Generated the client api if there are new endpoints and/or DTOs

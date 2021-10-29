@@ -2,15 +2,27 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
-  build-and-test:
+  test-backend:
     executor:
       name: node/default
     steps:
       - checkout
-      - node/install-packages
       - run:
-          command: npm run test:backend
+          name: Install backend dependencies
+          command: cd backend && npm install
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run backend tests
+          command: npm run test:backend:unit:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./backend/reports/junit/
+      - store_artifacts:
+          path: ./backend/reports/junit
 workflows:
-  build-and-test:
+  test:
     jobs:
-      - build-and-test
+      - test-backend
