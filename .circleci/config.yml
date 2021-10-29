@@ -11,6 +11,9 @@ jobs:
           name: Install backend dependencies
           command: cd backend && npm install
       - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
           name: Run backend tests
           command: npm run test:backend
 workflows:
