@@ -13,7 +13,6 @@ import { RegisterUserDTO } from './dto/registerUser.dto';
 import { TokenPayload } from './types/tokenPayload.interface';
 import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
 import { LoginUserDTO } from './dto/loginUser.dto';
-import { User } from '../user/user.entity';
 import { UserDTO } from '../user/dto/user.dto';
 
 @Injectable()
@@ -109,7 +108,7 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    return `Authorization=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}`;
+    return `Authorization=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None`;
   }
 
   public getCookieWithRefreshToken(userId: string) {
@@ -121,15 +120,15 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}`;
+    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None`;
 
     return { cookie, token };
   }
 
   public getCookiesForLogOut() {
     return [
-      'Authorization=; HttpOnly; Path=/; Max-Age=0',
-      'Refresh=; HttpOnly; Path=/; Max-Age=0',
+      'Authorization=; HttpOnly; Path=/; Max-Age=0; SameSite=None',
+      'Refresh=; HttpOnly; Path=/; Max-Age=0; SameSite=None',
     ];
   }
 
