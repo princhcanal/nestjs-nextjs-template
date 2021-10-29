@@ -7,6 +7,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install node
+          command: sudo apt install nodejs
+      - run:
           name: Install backend dependencies
           command: cd backend && npm install
       - run:
