@@ -18,6 +18,9 @@ const config: Config.InitialOptions = {
     https://jestjs.io/docs/webpack#handling-static-assets */
     '^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$':
       '<rootDir>/__mocks__/fileMock.js',
+
+    // Handle module aliases
+    '^@/components/(.*)$': '<rootDir>/components/$1',
   },
   testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/.next/'],
   testEnvironment: 'jsdom',
@@ -30,9 +33,9 @@ const config: Config.InitialOptions = {
     '/node_modules/',
     '^.+\\.module\\.(css|sass|scss)$',
   ],
-  setupFilesAfterEnv: ['./jest-setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest-setup.ts'],
   rootDir: '__tests__',
-  testRegex: '.*\\.spec\\.ts$',
+  testRegex: '.*\\.spec\\.tsx$',
 };
 
 export default config;

@@ -10,7 +10,7 @@ import { LoginUserDTO } from 'generated-api';
 export const LoginForm = () => {
   const mutation = useLogin();
 
-  const onSubmit = async (loginDTO: LoginUserDTO) => {
+  const onSubmit = (loginDTO: LoginUserDTO) => {
     mutation.mutate(loginDTO);
   };
 
@@ -62,7 +62,7 @@ export const LoginForm = () => {
             </Box>
             <Box mb='4'>
               <Button
-                dataCy='login-submit-btn'
+                data-cy='login-submit-btn'
                 formNoValidate
                 type='submit'
                 isLoading={mutation.isLoading}

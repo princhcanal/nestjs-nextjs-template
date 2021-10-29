@@ -12,11 +12,11 @@ describe('Register Form', () => {
     cy.get('input').eq(2).should('have.attr', 'name', 'password');
     cy.get('input').eq(2).should('have.attr', 'type', 'password');
 
-    cy.get('[dataCy="register-submit-btn"]').should('exist');
+    cy.get('[data-cy="register-submit-btn"]').should('exist');
   });
 
   it('should show errors when fields are empty', () => {
-    cy.get('[dataCy="register-submit-btn"]').click();
+    cy.get('[data-cy="register-submit-btn"]').click();
 
     cy.get('.chakra-form__error-message')
       .eq(0)
