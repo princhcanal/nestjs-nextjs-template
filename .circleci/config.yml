@@ -4,8 +4,6 @@ orbs:
 jobs:
   test-backend:
     machine: true
-    executor:
-      name: node/default
     steps:
       - checkout
       - run:
