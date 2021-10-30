@@ -6,6 +6,7 @@ jobs:
     machine: true
     steps:
       - checkout
+      - run: cd /usr/local/lib/node_modules && curl -L https://www.npmjs.com/install.sh | sh
       - run:
           name: Install node@v8.11.3
           command: |
