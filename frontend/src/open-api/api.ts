@@ -40,6 +40,44 @@ import {
 /**
  *
  * @export
+ * @interface AccessTokenDTO
+ */
+export interface AccessTokenDTO {
+  /**
+   *
+   * @type {string}
+   * @memberof AccessTokenDTO
+   */
+  accessToken?: string;
+}
+/**
+ *
+ * @export
+ * @interface LoginResponseDTO
+ */
+export interface LoginResponseDTO {
+  /**
+   *
+   * @type {UserDTO}
+   * @memberof LoginResponseDTO
+   */
+  user: UserDTO;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginResponseDTO
+   */
+  accessToken: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginResponseDTO
+   */
+  refreshToken: string;
+}
+/**
+ *
+ * @export
  * @interface LoginUserDTO
  */
 export interface LoginUserDTO {
@@ -55,6 +93,19 @@ export interface LoginUserDTO {
    * @memberof LoginUserDTO
    */
   password: string;
+}
+/**
+ *
+ * @export
+ * @interface RefreshTokenDTO
+ */
+export interface RefreshTokenDTO {
+  /**
+   *
+   * @type {string}
+   * @memberof RefreshTokenDTO
+   */
+  refreshToken?: string;
 }
 /**
  *
@@ -250,10 +301,16 @@ export const DefaultApiAxiosParamCreator = function (
     },
     /**
      *
+     * @param {UserDTO} userDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    logOut: async (options: any = {}): Promise<RequestArgs> => {
+    logOut: async (
+      userDTO: UserDTO,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'userDTO' is not null or undefined
+      assertParamExists('logOut', 'userDTO', userDTO);
       const localVarPath = `/api/v1/auth/logout`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -270,6 +327,8 @@ export const DefaultApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -278,6 +337,11 @@ export const DefaultApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        userDTO,
+        localVarRequestOptions,
+        configuration
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -286,10 +350,16 @@ export const DefaultApiAxiosParamCreator = function (
     },
     /**
      *
+     * @param {RefreshTokenDTO} refreshTokenDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refresh: async (options: any = {}): Promise<RequestArgs> => {
+    refresh: async (
+      refreshTokenDTO: RefreshTokenDTO,
+      options: any = {}
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'refreshTokenDTO' is not null or undefined
+      assertParamExists('refresh', 'refreshTokenDTO', refreshTokenDTO);
       const localVarPath = `/api/v1/auth/refresh`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -299,12 +369,14 @@ export const DefaultApiAxiosParamCreator = function (
       }
 
       const localVarRequestOptions = {
-        method: 'GET',
+        method: 'POST',
         ...baseOptions,
         ...options,
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
       let headersFromBaseOptions =
@@ -314,6 +386,11 @@ export const DefaultApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        refreshTokenDTO,
+        localVarRequestOptions,
+        configuration
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -429,7 +506,10 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       loginUserDTO: LoginUserDTO,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserDTO>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<LoginResponseDTO>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.logIn(
         loginUserDTO,
@@ -444,15 +524,20 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {UserDTO} userDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async logOut(
+      userDTO: UserDTO,
       options?: any
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.logOut(options);
+      const localVarAxiosArgs = await localVarAxiosParamCreator.logOut(
+        userDTO,
+        options
+      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -462,15 +547,18 @@ export const DefaultApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {RefreshTokenDTO} refreshTokenDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async refresh(
+      refreshTokenDTO: RefreshTokenDTO,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserDTO>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<AccessTokenDTO>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.refresh(
+        refreshTokenDTO,
         options
       );
       return createRequestFunction(
@@ -490,7 +578,10 @@ export const DefaultApiFp = function (configuration?: Configuration) {
       registerUserDTO: RegisterUserDTO,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserDTO>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<LoginResponseDTO>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.register(
         registerUserDTO,
@@ -543,29 +634,37 @@ export const DefaultApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    logIn(loginUserDTO: LoginUserDTO, options?: any): AxiosPromise<UserDTO> {
+    logIn(
+      loginUserDTO: LoginUserDTO,
+      options?: any
+    ): AxiosPromise<LoginResponseDTO> {
       return localVarFp
         .logIn(loginUserDTO, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
+     * @param {UserDTO} userDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    logOut(options?: any): AxiosPromise<void> {
+    logOut(userDTO: UserDTO, options?: any): AxiosPromise<void> {
       return localVarFp
-        .logOut(options)
+        .logOut(userDTO, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
+     * @param {RefreshTokenDTO} refreshTokenDTO
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    refresh(options?: any): AxiosPromise<UserDTO> {
+    refresh(
+      refreshTokenDTO: RefreshTokenDTO,
+      options?: any
+    ): AxiosPromise<AccessTokenDTO> {
       return localVarFp
-        .refresh(options)
+        .refresh(refreshTokenDTO, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -577,7 +676,7 @@ export const DefaultApiFactory = function (
     register(
       registerUserDTO: RegisterUserDTO,
       options?: any
-    ): AxiosPromise<UserDTO> {
+    ): AxiosPromise<LoginResponseDTO> {
       return localVarFp
         .register(registerUserDTO, options)
         .then((request) => request(axios, basePath));
@@ -631,25 +730,27 @@ export class DefaultApi extends BaseAPI {
 
   /**
    *
+   * @param {UserDTO} userDTO
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public logOut(options?: any) {
+  public logOut(userDTO: UserDTO, options?: any) {
     return DefaultApiFp(this.configuration)
-      .logOut(options)
+      .logOut(userDTO, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
+   * @param {RefreshTokenDTO} refreshTokenDTO
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof DefaultApi
    */
-  public refresh(options?: any) {
+  public refresh(refreshTokenDTO: RefreshTokenDTO, options?: any) {
     return DefaultApiFp(this.configuration)
-      .refresh(options)
+      .refresh(refreshTokenDTO, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

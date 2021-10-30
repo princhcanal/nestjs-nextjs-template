@@ -1,5 +1,6 @@
 import { UserDTO } from 'generated-api';
 import create from 'zustand';
+import { LocalStorageKeys } from '../enums/localStorageKeys';
 
 interface GlobalState {
   getUser: () => UserDTO | undefined;
@@ -7,11 +8,9 @@ interface GlobalState {
   removeUser: () => void;
 }
 
-export const LOCAL_STORAGE_USER_KEY = 'user';
-
 export const useGlobalStore = create<GlobalState>(() => ({
   getUser: () => {
-    const user = localStorage.getItem(LOCAL_STORAGE_USER_KEY);
+    const user = localStorage.getItem(LocalStorageKeys.USER);
 
     if (user) {
       return JSON.parse(user);
@@ -20,9 +19,9 @@ export const useGlobalStore = create<GlobalState>(() => ({
     return undefined;
   },
   setUser: (user: UserDTO) => {
-    localStorage.setItem(LOCAL_STORAGE_USER_KEY, JSON.stringify(user));
+    localStorage.setItem(LocalStorageKeys.USER, JSON.stringify(user));
   },
   removeUser: () => {
-    localStorage.removeItem(LOCAL_STORAGE_USER_KEY);
+    localStorage.removeItem(LocalStorageKeys.USER);
   },
 }));
