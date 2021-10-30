@@ -7,14 +7,14 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install node and npm
-          command: sudo apt-get install node && sudo apt-get install npm
-      - run:
-          name: Bypass CERT_UNTRUSTED error
-          command: npm config set strict-ssl false
-      - run:
-          name: Update npm
-          command: npm cache clear --force && sudo npm install npm -g
+          name: Install node@v8.11.3
+          command: |
+            ./load-nvm.sh
+            nvm install v8.11.3
+            nvm alias default v8.11.3
+      - run: |
+          ./load-nvm.sh
+          npm version
       - run:
           name: Install backend dependencies
           command: cd backend && npm install
