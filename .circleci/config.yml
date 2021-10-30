@@ -2,35 +2,6 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
-  test-backend-integration:
-    machine: true
-    steps:
-      - checkout
-      - run: cd /usr/local/lib/node_modules && curl -L https://www.npmjs.com/install.sh | sh
-      - run:
-          name: Install node@v8.11.3
-          command: |
-            ./load-nvm.sh
-            nvm install v8.11.3
-            nvm alias default v8.11.3
-      - run: |
-          ./load-nvm.sh
-          npm version
-      - run:
-          name: Install backend dependencies
-          command: cd backend && npm install
-      - run:
-          name: Install JUnit coverage reporter
-          command: npm install -D jest-junit
-      - run:
-          name: Run backend integration tests
-          command: npm run test:backend:ci
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
-      - store_test_results:
-          path: ./backend/reports/junit/
-      - store_artifacts:
-          path: ./backend/reports/junit
   test-backend-mock:
     executor:
       name: node/default
@@ -74,6 +45,5 @@ jobs:
 workflows:
   test:
     jobs:
-      - test-backend-integration
       - test-backend-mock
       - test-frontend
