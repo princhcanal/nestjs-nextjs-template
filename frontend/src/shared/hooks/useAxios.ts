@@ -1,6 +1,10 @@
 import { axiosInstance as axios } from '../axios';
 import { useToast, UseToastOptions } from '@chakra-ui/react';
 import { AxiosResponse } from 'axios';
+import {
+  LOCAL_STORAGE_ACCESS_TOKEN_KEY,
+  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
+} from '../stores';
 
 interface UseAxiosOptions {
   showToastOnError?: boolean;
@@ -23,6 +27,16 @@ export const useAxios = ({
   toastDescription,
 }: UseAxiosOptions = DEFAULT_USE_AXIOS_OPTIONS) => {
   const toast = useToast();
+
+  axios.interceptors.request.use((config) => {
+    const accessToken = localStorage.getItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
+
+    if (accessToken && config.headers) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  });
 
   axios.interceptors.response.use(
     (res: AxiosResponse<any>) => {
@@ -50,18 +64,32 @@ export const useAxios = ({
     },
     async (e: any) => {
       if (e) {
-        const { message, retryWithRefreshToken } = e.response.data;
+        const { message, statusCode, invalidRefreshToken } = e.response.data;
+        const refreshToken = localStorage.getItem(
+          LOCAL_STORAGE_REFRESH_TOKEN_KEY
+        );
 
-        if (retryWithRefreshToken) {
+        if (refreshToken && statusCode === 401 && !invalidRefreshToken) {
           try {
             e.config._retry = true;
-            await axios.get('/auth/refresh');
+
+            const { data: accessTokenDTO }: any = await axios.post(
+              '/auth/refresh',
+              { refreshToken }
+            );
+
+            const { accessToken } = accessTokenDTO;
+
+            if (accessToken) {
+              localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, accessToken);
+            }
+
             return axios(e.config);
             // tslint:disable:no-empty
           } catch (e) {}
         }
 
-        if (showToastOnError) {
+        if (showToastOnError && !invalidRefreshToken) {
           let description = '';
 
           if (message) {

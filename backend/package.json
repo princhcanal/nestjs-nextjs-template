@@ -28,7 +28,7 @@
     "migration:create": "npm run typeorm migration:create -- -n",
     "migration:revert": "npm run typeorm migration:revert",
     "prepare": "cd ../ && husky install ./backend/.husky",
-    "api:generate": "rm -rf ../frontend/src/swagger && openapi-generator-cli generate -i http://localhost:5000/api-json -g typescript-axios -o ../frontend/src/swagger --config api.json && prettier --write \"../frontend/src/swagger/**/*.ts\" && cd ../frontend && npm install generated-api"
+    "generate:api": "nest build && rm -rf ../frontend/src/open-api && openapi-generator-cli generate -i http://localhost:5000/api-json -g typescript-axios -o ../frontend/src/open-api --config api.json && prettier --write \"../frontend/src/open-api/**/*.ts\" && cd ../frontend && npm install generated-api"
   },
   "lint-staged": {
     "src/**/*.ts": [

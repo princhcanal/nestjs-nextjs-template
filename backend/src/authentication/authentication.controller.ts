@@ -1,21 +1,12 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-  UseGuards,
-  Res,
-  Req,
-  Get,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
-import { JwtAuthenticationGuard } from './guards/jwtAuthentication.guard';
-import { RequestWithUser } from './types/requestWithUser.interface';
-import { RegisterUserDTO } from './dto/registerUser.dto';
-import { LoginUserDTO } from './dto/loginUser.dto';
+import { RegisterUserDTO } from './dto/register-user.dto';
+import { LoginUserDTO } from './dto/login-user.dto';
 import { ApiBody } from '@nestjs/swagger';
+import { LoginResponseDTO } from './dto/login-response.dto';
 import { UserDTO } from '../user/dto/user.dto';
+import { RefreshTokenDTO } from './dto/refresh-token.dto';
+import { AccessTokenDTO } from './dto/access-token.dto';
 
 @Controller(AuthenticationController.AUTH_API_ROUTE)
 export class AuthenticationController {
@@ -30,37 +21,30 @@ export class AuthenticationController {
   @ApiBody({ type: RegisterUserDTO })
   @Post(AuthenticationController.REGISTER_API_ROUTE)
   public register(
-    @Body() registerUserDTO: RegisterUserDTO,
-    @Res({ passthrough: true }) res: Response
-  ): Promise<UserDTO> {
-    return this.authenticationService.register(registerUserDTO, res);
+    @Body() registerUserDTO: RegisterUserDTO
+  ): Promise<LoginResponseDTO> {
+    return this.authenticationService.register(registerUserDTO);
   }
 
   @HttpCode(200)
   @ApiBody({ type: LoginUserDTO })
   @Post(AuthenticationController.LOGIN_API_ROUTE)
-  public logIn(
-    @Body() loginUserDTO: LoginUserDTO,
-    @Res({ passthrough: true }) res: Response
-  ): Promise<UserDTO> {
-    return this.authenticationService.login(loginUserDTO, res);
+  public logIn(@Body() loginUserDTO: LoginUserDTO): Promise<LoginResponseDTO> {
+    return this.authenticationService.login(loginUserDTO);
   }
 
   @HttpCode(200)
-  @UseGuards(JwtAuthenticationGuard)
+  @ApiBody({ type: UserDTO })
   @Post(AuthenticationController.LOGOUT_API_ROUTE)
-  public logOut(
-    @Req() req: RequestWithUser,
-    @Res({ passthrough: true }) res: Response
-  ): void {
-    this.authenticationService.logout(req.user.id, res);
+  public logOut(@Body() user: UserDTO): void {
+    this.authenticationService.logout(user.id);
   }
 
-  @Get(AuthenticationController.REFRESH_API_ROUTE)
+  @ApiBody({ type: RefreshTokenDTO })
+  @Post(AuthenticationController.REFRESH_API_ROUTE)
   public refresh(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ): Promise<UserDTO> {
-    return this.authenticationService.refresh(req, res);
+    @Body() { refreshToken }: RefreshTokenDTO
+  ): Promise<AccessTokenDTO> {
+    return this.authenticationService.refresh(refreshToken);
   }
 }

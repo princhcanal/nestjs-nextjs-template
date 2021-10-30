@@ -6,14 +6,14 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
-import { RegisterUserDTO } from './dto/registerUser.dto';
+import { RegisterUserDTO } from './dto/register-user.dto';
 import { TokenPayload } from './types/tokenPayload.interface';
 import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
-import { LoginUserDTO } from './dto/loginUser.dto';
-import { UserDTO } from '../user/dto/user.dto';
+import { LoginUserDTO } from './dto/login-user.dto';
+import { LoginResponseDTO } from './dto/login-response.dto';
+import { AccessTokenDTO } from './dto/access-token.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,30 +23,29 @@ export class AuthenticationService {
     private readonly configService: ConfigService
   ) {}
 
-  public async login(
-    loginUserDTO: LoginUserDTO,
-    res: Response
-  ): Promise<UserDTO> {
+  public async login(loginUserDTO: LoginUserDTO): Promise<LoginResponseDTO> {
     const user = await this.getAuthenticatedUser(
       loginUserDTO.email,
       loginUserDTO.password
     );
 
-    const accessTokenCookie = this.getCookieWithJwtAccessToken(user.id);
-    const { cookie: refreshTokenCookie, token: refreshToken } =
-      this.getCookieWithRefreshToken(user.id);
+    const accessToken = this.getJwtAccessToken(user.id);
+    const refreshToken = this.getRefreshToken(user.id);
 
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
 
-    this.setCookies(res, [accessTokenCookie, refreshTokenCookie]);
+    const userDTO = this.userService.toDTO(user);
 
-    return this.userService.toDTO(user);
+    return {
+      user: userDTO,
+      accessToken,
+      refreshToken,
+    };
   }
 
   public async register(
-    registerUserDTO: RegisterUserDTO,
-    res: Response
-  ): Promise<UserDTO> {
+    registerUserDTO: RegisterUserDTO
+  ): Promise<LoginResponseDTO> {
     const { email, password } = registerUserDTO;
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -56,7 +55,7 @@ export class AuthenticationService {
         password: hashedPassword,
       });
 
-      return this.login({ email, password }, res);
+      return this.login({ email, password });
     } catch (error) {
       if (error?.code === PostgresErrorCode.UniqueViolation) {
         throw new BadRequestException(
@@ -68,29 +67,28 @@ export class AuthenticationService {
     }
   }
 
-  public logout(userId: string, res: Response) {
-    const cookies = this.getCookiesForLogOut();
+  public logout(userId: string) {
     this.userService.deleteRefreshToken(userId);
-    this.setCookies(res, cookies);
   }
 
-  public async refresh(req: Request, res: Response): Promise<UserDTO> {
-    const refreshToken = req.cookies?.Refresh;
-    if (!refreshToken) throw new UnauthorizedException();
+  public async refresh(refreshToken?: string): Promise<AccessTokenDTO> {
+    if (!refreshToken)
+      throw new UnauthorizedException({ invalidRefreshToken: true });
+
     const payload = this.jwtService.decode(refreshToken) as TokenPayload;
+
+    if (this.tokenExpired(payload.exp)) {
+      throw new UnauthorizedException({ invalidRefreshToken: true });
+    }
 
     const user = await this.userService.getUserIfRefreshTokenMatches(
       refreshToken,
       payload.userId
     );
 
-    const accessTokenCookie = this.getCookieWithJwtAccessToken(user.id);
-    this.setCookies(res, accessTokenCookie);
-    return this.userService.toDTO(user);
-  }
+    const accessToken = this.getJwtAccessToken(user.id);
 
-  public setCookies(res: Response, cookies: string | string[]) {
-    res.setHeader('Set-Cookie', cookies);
+    return { accessToken };
   }
 
   public async getAuthenticatedUser(email: string, plainTextPassword: string) {
@@ -99,7 +97,7 @@ export class AuthenticationService {
     return user;
   }
 
-  public getCookieWithJwtAccessToken(userId: string) {
+  public getJwtAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
     const secret = this.configService.get('JWT_ACCESS_TOKEN_SECRET');
     const expiresIn = this.configService.get(
@@ -108,10 +106,10 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    return `Authorization=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None; Secure`;
+    return token;
   }
 
-  public getCookieWithRefreshToken(userId: string) {
+  public getRefreshToken(userId: string) {
     const payload: TokenPayload = { userId };
     const secret = this.configService.get('JWT_REFRESH_TOKEN_SECRET');
     const expiresIn = this.configService.get(
@@ -120,16 +118,7 @@ export class AuthenticationService {
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
 
-    const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${expiresIn}; SameSite=None; Secure`;
-
-    return { cookie, token };
-  }
-
-  public getCookiesForLogOut() {
-    return [
-      `Authorization=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure`,
-      `Refresh=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure`,
-    ];
+    return token;
   }
 
   public async verifyPassword(
@@ -144,5 +133,9 @@ export class AuthenticationService {
     if (!isPasswordMatching) {
       throw new BadRequestException('Wrong credentials provided');
     }
+  }
+
+  public tokenExpired(exp: number) {
+    return Date.now() > exp * 1000;
   }
 }
