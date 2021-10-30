@@ -1,5 +1,5 @@
 import { GetStaticProps, NextPage } from 'next';
-import { Register } from '../modules/register/components/Register';
+import { Register } from '../../modules/register/components/Register';
 
 const RegisterPage: NextPage = () => <Register />;
 

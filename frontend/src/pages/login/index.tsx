@@ -1,5 +1,5 @@
 import { GetStaticProps, NextPage } from 'next';
-import { Login } from '../modules/login/components/Login';
+import { Login } from '../../modules/login/components/Login';
 
 const LoginPage: NextPage = () => <Login />;
 
