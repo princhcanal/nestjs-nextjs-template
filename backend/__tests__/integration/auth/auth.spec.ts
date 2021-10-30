@@ -1,4 +1,4 @@
-import { AuthenticationController } from '../../src/authentication/authentication.controller';
+import { AuthenticationController } from '../../../src/authentication/authentication.controller';
 
 const request = global.request;
 

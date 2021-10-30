@@ -68,7 +68,7 @@ export class AuthenticationService {
     }
   }
 
-  public logout(res: Response, userId: string) {
+  public logout(userId: string, res: Response) {
     const cookies = this.getCookiesForLogOut();
     this.userService.deleteRefreshToken(userId);
     this.setCookies(res, cookies);
