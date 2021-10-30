@@ -12,6 +12,16 @@
  * Do not edit the class manually.
  */
 
-export * from './api';
-export * from './configuration';
-export * from './models';
+/**
+ *
+ * @export
+ * @interface RefreshTokenDTO
+ */
+export interface RefreshTokenDTO {
+  /**
+   *
+   * @type {string}
+   * @memberof RefreshTokenDTO
+   */
+  refreshToken?: string;
+}

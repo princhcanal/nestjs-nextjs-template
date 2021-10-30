@@ -12,6 +12,16 @@
  * Do not edit the class manually.
  */
 
-export * from './api';
-export * from './configuration';
-export * from './models';
+/**
+ *
+ * @export
+ * @interface AccessTokenDTO
+ */
+export interface AccessTokenDTO {
+  /**
+   *
+   * @type {string}
+   * @memberof AccessTokenDTO
+   */
+  accessToken?: string;
+}
