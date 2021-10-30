@@ -97,7 +97,7 @@ export const useAxios = ({
             status: toastStatus || 'error',
             title: toastTitle || 'Error!',
             description:
-              toastDescription || description || 'Something wrong happened',
+              toastDescription || description || 'Something went wrong',
             isClosable: true,
             variant: 'subtle',
           });
