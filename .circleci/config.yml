@@ -2,7 +2,29 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 jobs:
-  test-backend:
+  test-backend-integration:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Install node and npm
+          command: sudo apt-get install node && sudo apt-get install npm
+      - run:
+          name: Install backend dependencies
+          command: cd backend && npm install
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run backend integration tests
+          command: npm run test:backend:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./backend/reports/junit/
+      - store_artifacts:
+          path: ./backend/reports/junit
+  test-backend-mock:
     executor:
       name: node/default
     steps:
@@ -45,5 +67,6 @@ jobs:
 workflows:
   test:
     jobs:
-      - test-backend
+      - test-backend-integration
+      - test-backend-mock
       - test-frontend
