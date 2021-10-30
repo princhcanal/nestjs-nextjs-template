@@ -14,7 +14,7 @@ jobs:
           command: npm config set strict-ssl false
       - run:
           name: Update npm
-          command: npm install npm -g
+          command: sudo npm install npm -g
       - run:
           name: Install backend dependencies
           command: cd backend && npm install
