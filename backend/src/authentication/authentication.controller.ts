@@ -53,7 +53,7 @@ export class AuthenticationController {
     @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response
   ): void {
-    this.authenticationService.logout(res, req.user.id);
+    this.authenticationService.logout(req.user.id, res);
   }
 
   @Get(AuthenticationController.REFRESH_API_ROUTE)
