@@ -1,5 +1,8 @@
 {
   "npmName": "generated-api",
   "npmVersion": "1.0.0",
-  "supportsES6": true
+  "supportsES6": true,
+  "withSeparateModelsAndApi": true,
+  "apiPackage": "api",
+  "modelPackage": "models"
 }

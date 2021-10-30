@@ -12,6 +12,22 @@
  * Do not edit the class manually.
  */
 
-export * from './api';
-export * from './configuration';
-export * from './models';
+/**
+ *
+ * @export
+ * @interface LoginUserDTO
+ */
+export interface LoginUserDTO {
+  /**
+   *
+   * @type {string}
+   * @memberof LoginUserDTO
+   */
+  email: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginUserDTO
+   */
+  password: string;
+}
