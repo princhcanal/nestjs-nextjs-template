@@ -5,11 +5,11 @@ const { ConfigModule } = require('@nestjs/config');
 const { TypeOrmModule } = require('@nestjs/typeorm');
 const {
   AuthenticationModule,
-} = require('../src/authentication/authentication.module');
-const { UserModule } = require('../src/user/user.module');
+} = require('../../src/authentication/authentication.module');
+const { UserModule } = require('../../src/user/user.module');
 const Joi = require('joi');
-const { AppController } = require('../src/app.controller');
-const { AppService } = require('../src/app.service');
+const { AppController } = require('../../src/app.controller');
+const { AppService } = require('../../src/app.service');
 const request = require('supertest');
 const { TransactionalTestContext } = require('typeorm-transactional-tests');
 const { getConnection } = require('typeorm');
@@ -44,7 +44,7 @@ class TestEnvironment extends NodeEnvironment {
           username: this.global.container.getUsername(),
           password: this.global.container.getPassword(),
           database: this.global.container.getDatabase(),
-          entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+          entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: true,
         }),
         AuthenticationModule,

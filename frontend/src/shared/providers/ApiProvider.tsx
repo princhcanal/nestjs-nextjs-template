@@ -6,7 +6,7 @@ let reviewAppUrl;
 
 if (process.env.NEXT_PUBLIC_VERCEL_GIT_IS_PULL_REQUEST === '1') {
   const prNumber = process.env.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_NUMBER;
-  reviewAppUrl = `https://nest-next-template-pr-${prNumber}.herokuapp.com`;
+  reviewAppUrl = `${process.env.NEXT_PUBLIC_HEROKU_PREVIEW_URL_PREFIX}${prNumber}.herokuapp.com`;
 }
 
 const baseURL =
