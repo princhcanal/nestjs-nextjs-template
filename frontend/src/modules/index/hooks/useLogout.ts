@@ -1,12 +1,9 @@
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { useMutation } from 'react-query';
+import { LocalStorageKeys } from '../../../shared/enums/localStorageKeys';
 import { ApiContext } from '../../../shared/providers/ApiProvider';
-import {
-  LOCAL_STORAGE_ACCESS_TOKEN_KEY,
-  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
-  useGlobalStore,
-} from '../../../shared/stores';
+import { useGlobalStore } from '../../../shared/stores';
 
 export const useLogout = () => {
   const api = useContext(ApiContext);
@@ -18,8 +15,8 @@ export const useLogout = () => {
     onSuccess: () => {
       removeUser();
 
-      localStorage.removeItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY);
-      localStorage.removeItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY);
+      localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
+      localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
 
       router.push('/login');
     },

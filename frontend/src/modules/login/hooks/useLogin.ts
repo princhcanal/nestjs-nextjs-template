@@ -2,12 +2,9 @@ import { useContext } from 'react';
 import { useMutation } from 'react-query';
 import { LoginUserDTO } from 'generated-api';
 import { ApiContext } from '../../../shared/providers/ApiProvider';
-import {
-  LOCAL_STORAGE_ACCESS_TOKEN_KEY,
-  LOCAL_STORAGE_REFRESH_TOKEN_KEY,
-  useGlobalStore,
-} from '../../../shared/stores';
+import { useGlobalStore } from '../../../shared/stores';
 import { useRouter } from 'next/router';
+import { LocalStorageKeys } from '../../../shared/enums/localStorageKeys';
 
 export const useLogin = () => {
   const api = useContext(ApiContext);
@@ -19,8 +16,8 @@ export const useLogin = () => {
       const { user, accessToken, refreshToken } = data;
 
       setUser(user);
-      localStorage.setItem(LOCAL_STORAGE_ACCESS_TOKEN_KEY, accessToken);
-      localStorage.setItem(LOCAL_STORAGE_REFRESH_TOKEN_KEY, refreshToken);
+      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
+      localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
 
       router.push('/');
     },
