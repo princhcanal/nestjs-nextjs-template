@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserDTO } from './dto/user.dto';
 
 @Entity()
 export class User {
@@ -31,4 +32,14 @@ export class User {
   @Column({ nullable: true })
   @Exclude()
   public currentHashedRefreshToken?: string;
+
+  public toDTO(): UserDTO {
+    return {
+      id: this.id,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      username: this.username,
+      email: this.email,
+    };
+  }
 }

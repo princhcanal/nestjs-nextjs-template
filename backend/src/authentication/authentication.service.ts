@@ -34,7 +34,7 @@ export class AuthenticationService {
 
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
 
-    const userDTO = this.userService.toDTO(user);
+    const userDTO = user.toDTO();
 
     return {
       user: userDTO,

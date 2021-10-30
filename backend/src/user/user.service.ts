@@ -1,29 +1,22 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, UpdateResult } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UpdateResult } from 'typeorm';
 import { User } from './user.entity';
 import { RegisterUserDTO } from '../authentication/dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
-import { UserDTO } from './dto/user.dto';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   public async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findByEmail(email);
 
     if (user) {
       return user;
     }
 
-    throw new BadRequestException('User with this email does not exist');
+    throw new NotFoundException('User with this email does not exist');
   }
 
   public async findById(id: string): Promise<User> {
@@ -72,17 +65,5 @@ export class UserService {
     return this.userRepository.update(userId, {
       currentHashedRefreshToken: null,
     });
-  }
-
-  public toDTO(user: User): UserDTO {
-    const userDTO: UserDTO = new UserDTO(
-      user.id,
-      user.createdAt,
-      user.updatedAt,
-      user.email,
-      user.username
-    );
-
-    return userDTO;
   }
 }
