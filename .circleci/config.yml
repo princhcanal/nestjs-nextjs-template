@@ -49,12 +49,16 @@ jobs:
 workflows:
   test:
     jobs:
-      - test-backend-mock
-      - test-frontend
+      - test-backend-mock:
+          name: Backend Mock Integration Tests
+      - test-frontend:
+          name: Frontend Component Tests
       - cypress/install:
+          name: Install Cypress
           build: npm run build
       - cypress/run:
+          name: E2E Tests
           requires:
             - cypress/install
           working_directory: frontend
-          start: npm start
+          start: cd .. && npm start
