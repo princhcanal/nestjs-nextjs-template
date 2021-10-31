@@ -1,12 +1,12 @@
-import { IsString } from 'class-validator';
+import { IsJWT } from 'class-validator';
 import { UserDTO } from '../../user/dto/user.dto';
 
 export class LoginResponseDTO {
   public user: UserDTO;
 
-  @IsString()
+  @IsJWT()
   public accessToken: string;
 
-  @IsString()
+  @IsJWT()
   public refreshToken: string;
 }

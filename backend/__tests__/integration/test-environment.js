@@ -1,21 +1,19 @@
-const NodeEnvironment = require('jest-environment-node');
-const { PostgreSqlContainer } = require('testcontainers');
-const { Test } = require('@nestjs/testing');
-const { ConfigModule } = require('@nestjs/config');
-const { TypeOrmModule } = require('@nestjs/typeorm');
-const {
-  AuthenticationModule,
-} = require('../../src/authentication/authentication.module');
-const { UserModule } = require('../../src/user/user.module');
-const Joi = require('joi');
-const { AppController } = require('../../src/app.controller');
-const { AppService } = require('../../src/app.service');
-const request = require('supertest');
-const { TransactionalTestContext } = require('typeorm-transactional-tests');
-const { getConnection } = require('typeorm');
+import * as NodeEnvironment from 'jest-environment-node';
+import { PostgreSqlContainer } from 'testcontainers';
+import { Test } from '@nestjs/testing';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthenticationModule } from '../../src/authentication/authentication.module';
+import { UserModule } from '../../src/user/user.module';
+import * as Joi from 'joi';
+import { AppController } from '../../src/app.controller';
+import { AppService } from '../../src/app.service';
+import * as request from 'supertest';
+import { TransactionalTestContext } from 'typeorm-transactional-tests';
+import { getConnection } from 'typeorm';
 
 // TODO: convert to typescript
-class TestEnvironment extends NodeEnvironment {
+export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
   }
@@ -84,5 +82,3 @@ class TestEnvironment extends NodeEnvironment {
     }
   }
 }
-
-module.exports = TestEnvironment;

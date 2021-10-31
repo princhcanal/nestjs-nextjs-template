@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
@@ -26,20 +26,21 @@ export class AuthenticationController {
     return this.authenticationService.register(registerUserDTO);
   }
 
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiBody({ type: LoginUserDTO })
   @Post(AuthenticationController.LOGIN_API_ROUTE)
   public logIn(@Body() loginUserDTO: LoginUserDTO): Promise<LoginResponseDTO> {
     return this.authenticationService.login(loginUserDTO);
   }
 
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @ApiBody({ type: UserDTO })
   @Post(AuthenticationController.LOGOUT_API_ROUTE)
   public logOut(@Body() user: UserDTO): void {
     this.authenticationService.logout(user.id);
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiBody({ type: RefreshTokenDTO })
   @Post(AuthenticationController.REFRESH_API_ROUTE)
   public refresh(
