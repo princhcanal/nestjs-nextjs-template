@@ -54,3 +54,4 @@ workflows:
     jobs:
       - test-backend-mock
       - test-frontend
+      - test-frontend-e2e
