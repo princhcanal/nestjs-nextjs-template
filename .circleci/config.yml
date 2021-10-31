@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+  cypress: cypress-io/cypress@1
 jobs:
   test-backend-mock:
     executor:
@@ -42,6 +43,12 @@ jobs:
           path: ./frontend/reports/junit/
       - store_artifacts:
           path: ./frontend/reports/junit
+  test-frontend-e2e:
+    steps:
+      - cypress/install:
+          build: npm run build
+      - cypress/run:
+          start: npm start
 workflows:
   test:
     jobs:
