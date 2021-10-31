@@ -64,5 +64,6 @@ workflows:
       - cypress/run:
           requires:
             - cypress/install
-          working_directory: frontend
+          pre-steps:
+            - run: cd frontend
           start: npm start
