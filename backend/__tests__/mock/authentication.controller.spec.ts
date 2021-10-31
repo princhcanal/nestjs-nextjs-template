@@ -1,61 +1,28 @@
-import * as request from 'supertest';
-import { Test } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { SuperTest, Test } from 'supertest';
+import { HttpStatus } from '@nestjs/common';
 import { AuthenticationController } from '../../src/authentication/authentication.controller';
-import { AuthenticationService } from '../../src/authentication/authentication.service';
 import { LoginUserDTO } from '../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../src/authentication/dto/register-user.dto';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from '../../src/authentication/strategies/jwt.strategy';
-import { UserService } from '../../src/user/user.service';
-import * as cookieParser from 'cookie-parser';
+import { MockType } from './utils/mock.type';
+import { User } from '../../src/user/user.entity';
+import { UserRepository } from '../../src/user/user.repository';
+import * as bcrypt from 'bcrypt';
+import { UserDTO } from '../../src/user/dto/user.dto';
+import { createApp } from './utils/create-app';
 
-xdescribe('AuthenticationController', () => {
-  let app: INestApplication;
-  let req: request.SuperTest<request.Test>;
+describe('AuthenticationController', () => {
   let loginRoute: string;
   let registerRoute: string;
   let logoutRoute: string;
   let refreshRoute: string;
+  let mockUserRepository: MockType<UserRepository>;
+  let request: SuperTest<Test>;
 
   beforeAll(async () => {
-    process.env.JWT_ACCESS_TOKEN_SECRET = 'mock_secret';
-    process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME = '86400';
-    process.env.JWT_REFRESH_TOKEN_SECRET = 'template_refresh';
-    process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME = '31540000';
+    const { module, req } = await createApp();
+    request = req;
 
-    const moduleRef = await Test.createTestingModule({
-      imports: [
-        ConfigModule,
-        PassportModule,
-        JwtModule.registerAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: async (configService: ConfigService) => ({
-            secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
-            signOptions: {
-              expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
-            },
-          }),
-        }),
-      ],
-      controllers: [AuthenticationController],
-      providers: [
-        UserService,
-        AuthenticationService,
-        ConfigService,
-        JwtStrategy,
-      ],
-    }).compile();
-
-    app = moduleRef.createNestApplication();
-    app.useGlobalPipes(new ValidationPipe());
-    app.use(cookieParser());
-    await app.init();
-
-    req = request(app.getHttpServer());
+    mockUserRepository = module.get(UserRepository);
 
     loginRoute =
       AuthenticationController.AUTH_API_ROUTE +
@@ -71,14 +38,55 @@ xdescribe('AuthenticationController', () => {
       AuthenticationController.REFRESH_API_ROUTE;
   });
 
-  describe('/login', () => {
-    it('should return user when email and password are provided', async () => {
+  const createMockUser = async (
+    user: LoginUserDTO | RegisterUserDTO
+  ): Promise<User> => {
+    const mockUser = new User();
+
+    mockUser.id = '';
+    mockUser.email = user.email;
+    mockUser.createdAt = new Date();
+    mockUser.updatedAt = new Date();
+    mockUser.password = await bcrypt.hash(user.password, 10);
+    mockUser.currentHashedRefreshToken;
+
+    if (user instanceof RegisterUserDTO) {
+      mockUser.username = user.username;
+    }
+
+    mockUserRepository.create.mockReturnValue(mockUser);
+    mockUserRepository.save.mockReturnValue(mockUser);
+    mockUserRepository.findOne.mockReturnValue(mockUser);
+    mockUserRepository.findByEmail.mockReturnValue(mockUser);
+
+    return mockUser;
+  };
+
+  const login = async (loginUserDTO: LoginUserDTO) => {
+    const loginUser = await createMockUser(loginUserDTO);
+
+    const { body } = await request
+      .post(loginRoute)
+      .send(loginUserDTO)
+      .expect(HttpStatus.OK);
+
+    const { user, accessToken, refreshToken } = body;
+
+    expect(user.email).toBe(loginUser.email);
+    expect(accessToken).toBeTruthy();
+    expect(refreshToken).toBeTruthy();
+
+    return { ...body, loginUser };
+  };
+
+  describe('POST /login', () => {
+    it('should successfully log in when when email and password are provided', async () => {
       const loginUserDTO: LoginUserDTO = {
         email: 'mock@mock.com',
         password: 'mock',
       };
 
-      await req.post(loginRoute).send(loginUserDTO).expect(200);
+      login(loginUserDTO);
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -93,22 +101,42 @@ xdescribe('AuthenticationController', () => {
         password: 'mock',
       };
 
-      await req.post(loginRoute).expect(400);
-      await req.post(loginRoute).send(loginUserDTOWithoutEmail).expect(400);
-      await req.post(loginRoute).send(loginUserDTOWithoutPassword).expect(400);
-      await req.post(loginRoute).send(loginUserDTOWithInvalidEmail).expect(400);
+      await request.post(loginRoute).expect(HttpStatus.BAD_REQUEST);
+      await request
+        .post(loginRoute)
+        .send(loginUserDTOWithoutEmail)
+        .expect(HttpStatus.BAD_REQUEST);
+      await request
+        .post(loginRoute)
+        .send(loginUserDTOWithoutPassword)
+        .expect(HttpStatus.BAD_REQUEST);
+      await request
+        .post(loginRoute)
+        .send(loginUserDTOWithInvalidEmail)
+        .expect(HttpStatus.BAD_REQUEST);
     });
   });
 
-  describe('/register', () => {
-    it('should return user when username, email, and password are provided', async () => {
+  describe('POST /register', () => {
+    it('should successfully register when username, email, and password are provided', async () => {
       const registerUserDTO: RegisterUserDTO = {
         username: 'new_mock_user',
         email: 'new_mock@mock.com',
         password: 'mock',
       };
 
-      await req.post(registerRoute).send(registerUserDTO).expect(201);
+      const registerUser = await createMockUser(registerUserDTO);
+
+      const { body } = await request
+        .post(registerRoute)
+        .send(registerUserDTO)
+        .expect(HttpStatus.CREATED);
+
+      const { user, accessToken, refreshToken } = body;
+
+      expect(user.email).toBe(registerUser.email);
+      expect(accessToken).toBeTruthy();
+      expect(refreshToken).toBeTruthy();
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -130,58 +158,67 @@ xdescribe('AuthenticationController', () => {
         password: 'mock',
       };
 
-      await req.post(registerRoute).expect(400);
-      await req
+      await request.post(registerRoute).expect(HttpStatus.BAD_REQUEST);
+      await request
         .post(registerRoute)
         .send(registerUserDTOWithoutUsername)
-        .expect(400);
-      await req
+        .expect(HttpStatus.BAD_REQUEST);
+      await request
         .post(registerRoute)
         .send(registerUserDTOWithoutEmail)
-        .expect(400);
-      await req
+        .expect(HttpStatus.BAD_REQUEST);
+      await request
         .post(registerRoute)
         .send(registerUserDTOWithoutPassword)
-        .expect(400);
-      await req
+        .expect(HttpStatus.BAD_REQUEST);
+      await request
         .post(registerRoute)
         .send(registerUserDTOWithInvalidEmail)
-        .expect(400);
+        .expect(HttpStatus.BAD_REQUEST);
     });
   });
 
-  describe('/logout', () => {
-    it('should log out with valid auth token', async () => {
-      const registerUserDTO: RegisterUserDTO = {
-        username: 'new_mock_user',
-        email: 'new_mock@mock.com',
+  describe('POST /logout', () => {
+    it('should successfully log out when user is sent', async () => {
+      const userDTO: UserDTO = {
+        id: 'mock_id',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        email: 'mock@mock.com',
+        username: 'mock',
+      };
+
+      await request.post(logoutRoute).send(userDTO).expect(HttpStatus.OK);
+    });
+
+    it('should not log out without sending user', async () => {
+      await request.post(logoutRoute).expect(HttpStatus.BAD_REQUEST);
+    });
+  });
+
+  describe('POST /refresh', () => {
+    it('should refresh access token', async () => {
+      const loginUserDTO: LoginUserDTO = {
+        email: 'mock@mock.com',
         password: 'mock',
       };
 
-      const registerResponse = await req
-        .post(registerRoute)
-        .send(registerUserDTO)
-        .expect(201);
-      const [authTokenCookie] = registerResponse.get('Set-Cookie');
+      const { refreshToken, loginUser } = await login(loginUserDTO);
 
-      await req.post(logoutRoute).set('Cookie', [authTokenCookie]).expect(200);
+      loginUser.currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+      mockUserRepository.findOne.mockReturnValue(loginUser);
+
+      const { body } = await request
+        .post(refreshRoute)
+        .send({ refreshToken })
+        .expect(HttpStatus.OK);
+      const { accessToken } = body;
+
+      expect(accessToken).toBeTruthy();
     });
 
-    it('should not log out with no auth token', async () => {
-      await req.post(logoutRoute).expect(401);
-    });
-
-    it('should not log out with invalid auth token', async () => {
-      await req
-        .post(logoutRoute)
-        .set('Cookie', ['Authorization=mock'])
-        .expect(401);
-    });
-  });
-
-  describe('/refresh', () => {
-    it('should successfully refresh tokens', async () => {
-      await req.get(refreshRoute).expect(200);
+    it('should not refresh access token when no refresh token is sent', async () => {
+      await request.post(refreshRoute).expect(HttpStatus.BAD_REQUEST);
     });
   });
 });
