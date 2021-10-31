@@ -56,4 +56,9 @@ workflows:
     jobs:
       - test-backend-mock
       - test-frontend
-      - test-frontend-e2e
+      - cypress/install:
+          build: npm run build
+      - cypress/run:
+          requires:
+            - cypress/install
+          start: npm start
