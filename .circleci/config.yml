@@ -59,6 +59,6 @@ workflows:
       - cypress/run:
           name: E2E Tests
           requires:
-            - cypress/install
+            - Install Cypress
           working_directory: frontend
           start: cd .. && npm start
