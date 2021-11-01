@@ -100,9 +100,10 @@ export default class TestEnvironment extends NodeEnvironment {
   async teardown() {
     await super.teardown();
 
-    if (!this.isCiBuild) {
+    if (this.isCiBuild) {
       await this.global.connection.dropDatabase();
       await this.global.connection.close();
+    } else {
       await this.global.container.stop();
     }
   }
