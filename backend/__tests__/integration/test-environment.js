@@ -43,7 +43,12 @@ export default class TestEnvironment extends NodeEnvironment {
       dbHost = host;
       dbPort = +port;
       dbDatabase = database;
-      console.log('PORT', dbPort);
+      console.log('DB_USERNAME', dbUsername);
+      console.log('DB_PASSWORD', dbPassword);
+      console.log('DB_HOST', dbHost);
+      console.log('DB_DATABASE', dbDatabase);
+      console.log('PORT', port);
+      console.log('DB_PORT', dbPort);
     }
 
     const moduleFixture = await Test.createTestingModule({
