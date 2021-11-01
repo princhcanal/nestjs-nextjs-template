@@ -33,6 +33,8 @@ export default class TestEnvironment extends NodeEnvironment {
     let dbPort;
     let dbDatabase;
 
+    console.log('DATABASE_URL', process.env.DATABASE_URL);
+    console.log('IS_CI_BUILD', process.env.IS_CI_BUILD);
     if (databaseUrl) {
       databaseUrl = databaseUrl.replace('postgres://', '');
       const [username, passwordAndHost, portAndDatabase] =
