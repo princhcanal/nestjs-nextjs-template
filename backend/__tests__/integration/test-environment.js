@@ -25,11 +25,25 @@ export default class TestEnvironment extends NodeEnvironment {
     if (!this.branch) {
       this.global.container = await new PostgreSqlContainer().start();
     }
-    const databaseUrl = process.env.DATABASE_URL;
 
-    const [username, passwordAndHost, portAndDatabase] = databaseUrl.split(':');
-    const [password, host] = passwordAndHost.split('@');
-    const [port, database] = portAndDatabase.split('/');
+    let databaseUrl = process.env.DATABASE_URL;
+    let dbUsername;
+    let dbPassword;
+    let dbHost;
+    let dbPort;
+    let dbDatabase;
+
+    if (databaseUrl) {
+      const [username, passwordAndHost, portAndDatabase] =
+        databaseUrl.split(':');
+      const [password, host] = passwordAndHost.split('@');
+      const [port, database] = portAndDatabase.split('/');
+      dbUsername = username;
+      dbPassword = password;
+      dbHost = host;
+      dbPort = port;
+      dbDatabase = database;
+    }
 
     const moduleFixture = await Test.createTestingModule({
       imports: [
@@ -45,16 +59,16 @@ export default class TestEnvironment extends NodeEnvironment {
         }),
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: this.branch ? host : this.global.container.getHost(),
-          port: this.branch ? port : this.global.container.getPort(),
+          host: this.branch ? dbHost : this.global.container.getHost(),
+          port: this.branch ? dbPort : this.global.container.getPort(),
           username: this.branch
-            ? username
+            ? dbUsername
             : this.global.container.getUsername(),
           password: this.branch
-            ? password
+            ? dbPassword
             : this.global.container.getPassword(),
           database: this.branch
-            ? database
+            ? dbDatabase
             : this.global.container.getDatabase(),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: true,

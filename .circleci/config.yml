@@ -25,6 +25,40 @@ jobs:
           path: ./backend/reports/junit/
       - store_artifacts:
           path: ./backend/reports/junit
+  test-backend-integration:
+    docker:
+      - image: cimg/node:17.0.1
+        environment:
+          NODE_OPTIONS: --openssl-legacy-provider
+      - image: circleci/postgres
+        environment:
+          POSTGRES_DB: template
+          POSTGRES_USER: template
+          POSTGRES_PASSWORD: template
+          PGDATA: /var/lib/postgresql/data/pgdata
+    environment:
+      DATABASE_URL: postgres://template:template@localhost:5432/template
+      JWT_ACCESS_TOKEN_SECRET: template_access
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
+      JWT_REFRESH_TOKEN_SECRET: template_refresh
+      JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+    steps:
+      - checkout
+      - run:
+          name: Install backend dependencies
+          command: cd backend && npm install
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run backend mock tests
+          command: npm run test:backend:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./backend/reports/junit/
+      - store_artifacts:
+          path: ./backend/reports/junit
   test-frontend:
     executor:
       name: node/default
@@ -80,9 +114,11 @@ jobs:
 workflows:
   test:
     jobs:
+      - test-backend-integration:
+          name: Backend Integration Tests
       - test-backend-mock:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      - test-e2e:
-          name: E2E Tests
+      # - test-e2e:
+      #     name: E2E Tests
