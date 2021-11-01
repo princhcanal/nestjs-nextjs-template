@@ -9,19 +9,11 @@ jobs:
       - image: cimg/node:17.0.1
         environment:
           NODE_OPTIONS: --openssl-legacy-provider
-      - image: circleci/postgres
-        environment:
-          POSTGRES_DB: template
-          POSTGRES_USER: template
-          POSTGRES_PASSWORD: template
-          PGDATA: /var/lib/postgresql/data/pgdata
     environment:
-      DATABASE_URL: postgres://template:template@localhost:5432/template
       JWT_ACCESS_TOKEN_SECRET: template_access
       JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
-      IS_CI_BUILD: 1
     steps:
       - setup_remote_docker:
           version: 19.03.13
