@@ -16,13 +16,13 @@ import { getConnection } from 'typeorm';
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
-    this.branch = process.env.HEROKU_BRANCH;
+    this.isCiBuild = process.env.IS_CI_BUILD;
   }
 
   async setup() {
     await super.setup();
 
-    if (!this.branch) {
+    if (!this.isCiBuild) {
       this.global.container = await new PostgreSqlContainer().start();
     }
 
@@ -59,15 +59,15 @@ export default class TestEnvironment extends NodeEnvironment {
         }),
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: this.branch ? dbHost : this.global.container.getHost(),
-          port: this.branch ? dbPort : this.global.container.getPort(),
-          username: this.branch
+          host: this.isCiBuild ? dbHost : this.global.container.getHost(),
+          port: this.isCiBuild ? dbPort : this.global.container.getPort(),
+          username: this.isCiBuild
             ? dbUsername
             : this.global.container.getUsername(),
-          password: this.branch
+          password: this.isCiBuild
             ? dbPassword
             : this.global.container.getPassword(),
-          database: this.branch
+          database: this.isCiBuild
             ? dbDatabase
             : this.global.container.getDatabase(),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
@@ -93,7 +93,7 @@ export default class TestEnvironment extends NodeEnvironment {
   async teardown() {
     await super.teardown();
 
-    if (!this.branch) {
+    if (!this.isCiBuild) {
       await this.global.container.stop();
     }
   }

@@ -5,27 +5,8 @@ orbs:
   cypress: cypress-io/cypress@1
 
 jobs:
-  test-backend-mock:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - run:
-          name: Install backend dependencies
-          command: cd backend && npm install
-      - run:
-          name: Install JUnit coverage reporter
-          command: npm install -D jest-junit
-      - run:
-          name: Run backend mock tests
-          command: npm run test:backend:mock:ci
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
-      - store_test_results:
-          path: ./backend/reports/junit/
-      - store_artifacts:
-          path: ./backend/reports/junit
   test-backend-integration:
+    machine: true
     docker:
       - image: cimg/node:17.0.1
         environment:
@@ -42,6 +23,7 @@ jobs:
       JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+      IS_CI_BUILD: 1
     steps:
       - checkout
       - run:
@@ -53,6 +35,26 @@ jobs:
       - run:
           name: Run backend mock tests
           command: npm run test:backend:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./backend/reports/junit/
+      - store_artifacts:
+          path: ./backend/reports/junit
+  test-backend-mock:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - run:
+          name: Install backend dependencies
+          command: cd backend && npm install
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run backend mock tests
+          command: npm run test:backend:mock:ci
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
       - store_test_results:
@@ -120,5 +122,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      # - test-e2e:
-      #     name: E2E Tests
+      - test-e2e:
+          name: E2E Tests
