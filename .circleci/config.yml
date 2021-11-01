@@ -2,11 +2,9 @@ version: 2.1
 
 orbs:
   node: circleci/node@3.0.0
-  cypress: cypress-io/cypress@1
 
 jobs:
   test-backend-integration:
-    machine: true
     docker:
       - image: cimg/node:17.0.1
         environment:
@@ -122,5 +120,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      - test-e2e:
-          name: E2E Tests
+      # - test-e2e:
+      #     name: E2E Tests
