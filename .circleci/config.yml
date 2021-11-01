@@ -31,7 +31,7 @@ jobs:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
       - run:
-          name: Run backend mock tests
+          name: Run backend integration tests
           command: npm run test:backend:ci
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
