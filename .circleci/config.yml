@@ -63,13 +63,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install frontend dependencies
-          command: cd frontend && npm install
+          name: Install frontend and backend dependencies
+          command: npm install
       - run:
           name: Run app
           command: npm start
       - run:
-          name: Run frontend unit tests
+          name: Run E2E tests
           command: npx cypress run
 
 workflows:
