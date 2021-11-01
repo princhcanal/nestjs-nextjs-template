@@ -16,12 +16,20 @@ import { getConnection } from 'typeorm';
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
+    this.branch = process.env.HEROKU_BRANCH;
   }
 
   async setup() {
     await super.setup();
 
-    this.global.container = await new PostgreSqlContainer().start();
+    if (!this.branch) {
+      this.global.container = await new PostgreSqlContainer().start();
+    }
+    const databaseUrl = process.env.DATABASE_URL;
+
+    const [username, passwordAndHost, portAndDatabase] = databaseUrl.split(':');
+    const [password, host] = passwordAndHost.split('@');
+    const [port, database] = portAndDatabase.split('/');
 
     const moduleFixture = await Test.createTestingModule({
       imports: [
@@ -37,11 +45,17 @@ export default class TestEnvironment extends NodeEnvironment {
         }),
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: this.global.container.getHost(),
-          port: this.global.container.getPort(),
-          username: this.global.container.getUsername(),
-          password: this.global.container.getPassword(),
-          database: this.global.container.getDatabase(),
+          host: this.branch ? host : this.global.container.getHost(),
+          port: this.branch ? port : this.global.container.getPort(),
+          username: this.branch
+            ? username
+            : this.global.container.getUsername(),
+          password: this.branch
+            ? password
+            : this.global.container.getPassword(),
+          database: this.branch
+            ? database
+            : this.global.container.getDatabase(),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: true,
         }),
@@ -64,7 +78,10 @@ export default class TestEnvironment extends NodeEnvironment {
 
   async teardown() {
     await super.teardown();
-    await this.global.container.stop();
+
+    if (!this.branch) {
+      await this.global.container.stop();
+    }
   }
 
   getVmContext() {
