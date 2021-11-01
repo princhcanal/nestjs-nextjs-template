@@ -11,17 +11,17 @@ import { AppService } from '../../src/app.service';
 import * as request from 'supertest';
 import { TransactionalTestContext } from 'typeorm-transactional-tests';
 import { getConnection } from 'typeorm';
+import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
-    console.log('constructor...');
     super(config, context);
     this.isCiBuild = process.env.IS_CI_BUILD;
   }
 
   async setup() {
-    console.log('setting up...');
     await super.setup();
 
     if (!this.isCiBuild) {
@@ -48,7 +48,6 @@ export default class TestEnvironment extends NodeEnvironment {
       dbDatabase = database;
     }
 
-    console.log('creating testing module...');
     const moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -85,10 +84,10 @@ export default class TestEnvironment extends NodeEnvironment {
     }).compile();
 
     const app = moduleFixture.createNestApplication();
-    console.log('app init...');
+    app.useGlobalPipes(new ValidationPipe());
+    app.use(cookieParser());
     await app.init();
 
-    console.log('init finished...');
     this.global.request = request(app.getHttpServer());
 
     this.global.transactionalContext = new TransactionalTestContext(
