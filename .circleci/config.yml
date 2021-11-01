@@ -23,6 +23,8 @@ jobs:
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
       IS_CI_BUILD: 1
     steps:
+      - setup_remote_docker:
+          version: 19.03.13
       - checkout
       - run:
           name: Install backend dependencies
