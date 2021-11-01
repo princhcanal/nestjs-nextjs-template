@@ -32,8 +32,6 @@ export default class TestEnvironment extends NodeEnvironment {
     let dbHost;
     let dbPort;
     let dbDatabase;
-    console.log('DATABASE_URL', process.env.DATABASE_URL);
-    console.log('IS_CI_BUILD', process.env.IS_CI_BUILD);
 
     if (databaseUrl) {
       const [username, passwordAndHost, portAndDatabase] =
@@ -43,8 +41,9 @@ export default class TestEnvironment extends NodeEnvironment {
       dbUsername = username;
       dbPassword = password;
       dbHost = host;
-      dbPort = port;
+      dbPort = +port;
       dbDatabase = database;
+      console.log('PORT', dbPort);
     }
 
     const moduleFixture = await Test.createTestingModule({
