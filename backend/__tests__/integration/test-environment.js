@@ -33,8 +33,6 @@ export default class TestEnvironment extends NodeEnvironment {
     let dbPort;
     let dbDatabase;
 
-    console.log('DATABASE_URL', process.env.DATABASE_URL);
-    console.log('IS_CI_BUILD', process.env.IS_CI_BUILD);
     if (databaseUrl) {
       databaseUrl = databaseUrl.replace('postgres://', '');
       const [username, passwordAndHost, portAndDatabase] =
@@ -46,14 +44,9 @@ export default class TestEnvironment extends NodeEnvironment {
       dbHost = host;
       dbPort = +port;
       dbDatabase = database;
-      console.log('DB_USERNAME', dbUsername);
-      console.log('DB_PASSWORD', dbPassword);
-      console.log('DB_HOST', dbHost);
-      console.log('DB_DATABASE', dbDatabase);
-      console.log('PORT', port);
-      console.log('DB_PORT', dbPort);
     }
 
+    console.log('creating testing module...');
     const moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -90,8 +83,10 @@ export default class TestEnvironment extends NodeEnvironment {
     }).compile();
 
     const app = moduleFixture.createNestApplication();
+    console.log('app init...');
     await app.init();
 
+    console.log('init finished...');
     this.global.request = request(app.getHttpServer());
 
     this.global.transactionalContext = new TransactionalTestContext(
