@@ -45,6 +45,33 @@ jobs:
           path: ./frontend/reports/junit/
       - store_artifacts:
           path: ./frontend/reports/junit
+  test-e2e:
+    executor:
+      name: node/default
+      docker:
+        - image: circleci/postgres
+        environment:
+          POSTGRES_DB: template
+          POSTGRES_USER: template
+          POSTGRES_PASSWORD: template
+          PGDATA: /var/lib/postgresql/data/pgdata
+    environment:
+      DATABASE_URL: postgres://template:template@localhost:5432/template
+      JWT_ACCESS_TOKEN_SECRET: template_access
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
+      JWT_REFRESH_TOKEN_SECRET: template_refresh
+      JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+    steps:
+      - checkout
+      - run:
+          name: Install frontend dependencies
+          command: cd frontend && npm install
+      - run:
+          name: Run app
+          command: npm start
+      - run:
+          name: Run frontend unit tests
+          command: npx cypress run
 
 workflows:
   test:
@@ -53,12 +80,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      - cypress/install:
-          name: Install Cypress
-          build: npm run build
-      - cypress/run:
+      - test-e2e:
           name: E2E Tests
-          requires:
-            - Install Cypress
-          working_directory: frontend
-          start: cd .. && npm start

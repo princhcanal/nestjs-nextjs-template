@@ -26,18 +26,11 @@ describe('AuthenticationController', () => {
 
     mockUserRepository = module.get(UserRepository);
 
-    loginRoute =
-      AuthenticationController.AUTH_API_ROUTE +
-      AuthenticationController.LOGIN_API_ROUTE;
-    registerRoute =
-      AuthenticationController.AUTH_API_ROUTE +
-      AuthenticationController.REGISTER_API_ROUTE;
-    logoutRoute =
-      AuthenticationController.AUTH_API_ROUTE +
-      AuthenticationController.LOGOUT_API_ROUTE;
-    refreshRoute =
-      AuthenticationController.AUTH_API_ROUTE +
-      AuthenticationController.REFRESH_API_ROUTE;
+    const authRoute = AuthenticationController.AUTH_API_ROUTE;
+    loginRoute = authRoute + AuthenticationController.LOGIN_API_ROUTE;
+    registerRoute = authRoute + AuthenticationController.REGISTER_API_ROUTE;
+    logoutRoute = authRoute + AuthenticationController.LOGOUT_API_ROUTE;
+    refreshRoute = authRoute + AuthenticationController.REFRESH_API_ROUTE;
   });
 
   const createMockUser = async (
