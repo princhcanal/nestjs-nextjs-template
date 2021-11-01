@@ -34,6 +34,7 @@ export default class TestEnvironment extends NodeEnvironment {
     let dbDatabase;
 
     if (databaseUrl) {
+      databaseUrl = databaseUrl.replace('postgres://', '');
       const [username, passwordAndHost, portAndDatabase] =
         databaseUrl.split(':');
       const [password, host] = passwordAndHost.split('@');
