@@ -15,11 +15,13 @@ import { getConnection } from 'typeorm';
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
+    console.log('constructor...');
     super(config, context);
     this.isCiBuild = process.env.IS_CI_BUILD;
   }
 
   async setup() {
+    console.log('setting up...');
     await super.setup();
 
     if (!this.isCiBuild) {
