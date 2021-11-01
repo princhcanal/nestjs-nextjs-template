@@ -32,6 +32,7 @@ export default class TestEnvironment extends NodeEnvironment {
     let dbHost;
     let dbPort;
     let dbDatabase;
+    console.log('DATABASE_URL');
 
     if (databaseUrl) {
       const [username, passwordAndHost, portAndDatabase] =
