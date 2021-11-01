@@ -11,8 +11,10 @@ import { AppService } from '../../src/app.service';
 import * as request from 'supertest';
 import { TransactionalTestContext } from 'typeorm-transactional-tests';
 import { getConnection } from 'typeorm';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import * as helmet from 'helmet';
 
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
@@ -84,8 +86,14 @@ export default class TestEnvironment extends NodeEnvironment {
     }).compile();
 
     const app = moduleFixture.createNestApplication();
+
     app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector))
+    );
     app.use(cookieParser());
+    app.use(helmet());
+
     await app.init();
 
     this.global.request = request(app.getHttpServer());
