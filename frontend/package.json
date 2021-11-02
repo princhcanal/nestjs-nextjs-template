@@ -10,8 +10,9 @@
     "prepare": "cd ../ && husky install ./frontend/.husky",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit",
     "test:e2e": "cypress open",
-    "test:ci": "jest --ci --runInBand --reporters=default --reporters=jest-junit"
+    "test:e2e:ci": "wait-on http://localhost:5000/api/v1 && wait-on http://localhost:3000/ && cypress run"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx}": [

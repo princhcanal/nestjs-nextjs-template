@@ -21,6 +21,7 @@
     "test:frontend:watch": "npm run test:watch --prefix frontend",
     "test:frontend:ci": "npm run test:ci --prefix frontend",
     "test:frontend:e2e": "npm run test:e2e --prefix frontend",
+    "test:frontend:e2e:ci": "npm run test:e2e:ci --prefix frontend",
     "migration": "npm run migration --prefix backend",
     "build": "npm run build:backend",
     "build:frontend": "npm run build --prefix frontend",
