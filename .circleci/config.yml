@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@3.0.0
+  cypress: cypress-io/cypress@1
 
 jobs:
   test-backend-integration:
@@ -15,6 +16,7 @@ jobs:
           POSTGRES_USER: template
           POSTGRES_PASSWORD: template
           PGDATA: /var/lib/postgresql/data/pgdata
+      - image: cypress/base
     environment:
       DATABASE_URL: postgres://template:template@localhost:5432/template
       JWT_ACCESS_TOKEN_SECRET: template_access
@@ -106,16 +108,10 @@ jobs:
       - run:
           name: Install frontend and backend dependencies
           command: npm install
-      - run:
-          name: Build app
-          command: npm run build:frontend && npm run build:backend
-      - run:
-          name: Run app
-          command: npm start
-          background: true
-      - run:
-          name: Run E2E tests
-          command: npm run test:frontend:e2e:ci
+      - cypress/install:
+          build: npm run build:frontend && npm run build:backend
+      - cypress/run:
+          start: npm start
 
 workflows:
   test:
