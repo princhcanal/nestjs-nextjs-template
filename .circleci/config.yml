@@ -108,10 +108,8 @@ jobs:
       - run:
           name: Install frontend and backend dependencies
           command: npm install
-      - cypress/install:
-          build: npm run build:frontend && npm run build:backend
-      - cypress/run:
-          start: npm start
+      - cypress/install
+      - cypress/run
 
 workflows:
   test:
