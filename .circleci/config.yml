@@ -104,8 +104,8 @@ jobs:
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
     steps:
-      - cypress/install
       - checkout
+      - cypress/install
       - run:
           name: Install frontend and backend dependencies
           command: npm install
