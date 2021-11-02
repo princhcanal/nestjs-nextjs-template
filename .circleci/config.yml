@@ -114,6 +114,7 @@ jobs:
       - run:
           name: Start app
           command: npm start
+          background: true
       - run:
           name: Run E2E Tests
           command: npm run test:frontend:e2e:ci
