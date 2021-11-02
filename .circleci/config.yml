@@ -115,7 +115,8 @@ jobs:
           background: true
       - run:
           name: Run E2E tests
-          command: npm run test:frontend:e2e:ci
+          command: npm run test:e2e:ci
+          working_directory: frontend
 
 workflows:
   test:
