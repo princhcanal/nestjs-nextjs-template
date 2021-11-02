@@ -108,7 +108,15 @@ jobs:
       - run:
           name: Install frontend and backend dependencies
           command: npm install
-      - cypress/install
+      - run:
+          name: Build frontend and backend
+          command: npm run build:frontend && npm run build:backend
+      - run:
+          name: Start app
+          command: npm start
+      - run:
+          name: Run E2E Tests
+          command: npm run test:frontend:e2e:ci
 
 workflows:
   test:
@@ -119,5 +127,8 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
+      - cypress/install
       - test-e2e:
+          requires:
+            - cypress/install
           name: E2E Tests
