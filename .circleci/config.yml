@@ -109,7 +109,9 @@ jobs:
           name: Install frontend and backend dependencies
           command: npm install
       - cypress/install
-      - cypress/run
+      - cypress/run:
+          requires:
+            - cypress/install
 
 workflows:
   test:
