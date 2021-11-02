@@ -47,6 +47,7 @@
     "sass": "^1.42.1",
     "ts-node": "^10.4.0",
     "vercel-is-pull-request": "0.0.8",
+    "wait-on": "^6.0.0",
     "yup": "^0.32.9",
     "zustand": "^3.5.12"
   },
