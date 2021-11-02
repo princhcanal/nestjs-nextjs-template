@@ -116,6 +116,7 @@ jobs:
       - run:
           name: Run E2E tests
           command: npx cypress run
+          working_directory: ./frontend
 
 workflows:
   test:
