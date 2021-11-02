@@ -104,6 +104,7 @@ jobs:
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
     steps:
+      - cypress/install
       - checkout
       - run:
           name: Install frontend and backend dependencies
@@ -128,8 +129,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      - cypress/install
       - test-e2e:
-          requires:
-            - cypress/install
           name: E2E Tests
