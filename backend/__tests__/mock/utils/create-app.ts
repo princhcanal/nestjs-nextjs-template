@@ -1,9 +1,11 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  /* ClassSerializerInterceptor, */ ValidationPipe,
+} from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as cookieParser from 'cookie-parser';
 import { MockAppModule } from '../modules/app.mock.module';
 import * as request from 'supertest';
-import { Reflector } from '@nestjs/core';
+// import { Reflector } from '@nestjs/core';
 import * as helmet from 'helmet';
 
 export const createApp = async () => {
@@ -14,7 +16,7 @@ export const createApp = async () => {
   const app = module.createNestApplication();
 
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.use(cookieParser());
   app.use(helmet());
 
