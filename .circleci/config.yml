@@ -28,7 +28,8 @@ jobs:
       - checkout
       - run:
           name: Install backend dependencies
-          command: cd backend && npm install
+          command: npm install
+          working_directory:: backend
       - run:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
@@ -48,7 +49,8 @@ jobs:
       - checkout
       - run:
           name: Install backend dependencies
-          command: cd backend && npm install
+          command: npm install
+          working_directory: ./backend
       - run:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
@@ -68,7 +70,8 @@ jobs:
       - checkout
       - run:
           name: Install frontend dependencies
-          command: cd frontend && npm install
+          command: npm install
+          working_directory: ./frontend
       - run:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
@@ -109,6 +112,7 @@ jobs:
       - run:
           name: Run app
           command: npm start
+          background: true
       - run:
           name: Run E2E tests
           command: npx cypress run
@@ -122,5 +126,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      # - test-e2e:
-      #     name: E2E Tests
+      - test-e2e:
+          name: E2E Tests
