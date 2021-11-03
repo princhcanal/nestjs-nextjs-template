@@ -111,7 +111,7 @@ jobs:
       - cypress/install:
           cache-key: >-
             node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
-          build: npm run build
+          build: npm run build:frontend && npm run build:backend
           verify-command: cd frontend && npx cypress verify
       - run:
           name: Start app
