@@ -4,7 +4,7 @@ describe('Login Form', () => {
     cy.intercept('/api/v1/auth/login').as('login');
   });
 
-  it('should successfully log in', () => {
+  xit('should successfully log in', () => {
     cy.get('input').first().should('have.attr', 'name', 'email');
     cy.get('input').first().should('have.attr', 'type', 'email');
     cy.get('input').first().type('test@test.com');
