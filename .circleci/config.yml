@@ -1,7 +1,46 @@
 version: 2.1
+
 orbs:
   node: circleci/node@3.0.0
+  cypress: cypress-io/cypress@1
+
 jobs:
+  test-backend-integration:
+    docker:
+      - image: cimg/node:16.13
+      - image: circleci/postgres
+        environment:
+          POSTGRES_DB: template
+          POSTGRES_USER: template
+          POSTGRES_PASSWORD: template
+          PGDATA: /var/lib/postgresql/data/pgdata
+    environment:
+      DATABASE_URL: postgres://template:template@localhost:5432/template
+      JWT_ACCESS_TOKEN_SECRET: template_access
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
+      JWT_REFRESH_TOKEN_SECRET: template_refresh
+      JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+      IS_CI_BUILD: 1
+    steps:
+      - setup_remote_docker:
+          version: 19.03.13
+      - checkout
+      - run:
+          name: Install backend dependencies
+          command: npm install
+          working_directory: ./backend
+      - run:
+          name: Install JUnit coverage reporter
+          command: npm install -D jest-junit
+      - run:
+          name: Run backend integration tests
+          command: npm run test:backend:ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
+      - store_test_results:
+          path: ./backend/reports/junit/
+      - store_artifacts:
+          path: ./backend/reports/junit
   test-backend-mock:
     executor:
       name: node/default
@@ -9,7 +48,8 @@ jobs:
       - checkout
       - run:
           name: Install backend dependencies
-          command: cd backend && npm install
+          command: npm install
+          working_directory: ./backend
       - run:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
@@ -29,7 +69,8 @@ jobs:
       - checkout
       - run:
           name: Install frontend dependencies
-          command: cd frontend && npm install
+          command: npm install
+          working_directory: ./frontend
       - run:
           name: Install JUnit coverage reporter
           command: npm install -D jest-junit
@@ -42,8 +83,48 @@ jobs:
           path: ./frontend/reports/junit/
       - store_artifacts:
           path: ./frontend/reports/junit
+  test-e2e:
+    docker:
+      - image: cimg/node:16.13
+      - image: circleci/postgres
+        environment:
+          POSTGRES_DB: template
+          POSTGRES_USER: template
+          POSTGRES_PASSWORD: template
+          PGDATA: /var/lib/postgresql/data/pgdata
+    environment:
+      DATABASE_URL: postgres://template:template@localhost:5432/template
+      JWT_ACCESS_TOKEN_SECRET: template_access
+      JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
+      JWT_REFRESH_TOKEN_SECRET: template_refresh
+      JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+    steps:
+      - checkout
+      - run:
+          name: Install Cypress dependencies
+          command: sudo apt update && sudo apt-get update && sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+      - cypress/install:
+          cache-key: >-
+            node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
+          build: npm run build:frontend && npm run build:backend
+          verify-command: cd frontend && npx cypress verify
+      - run:
+          name: Start app
+          command: npm start
+          background: true
+      - run:
+          name: Run E2E Tests
+          command: npm run test:e2e:ci
+          working_directory: ./frontend
+
 workflows:
   test:
     jobs:
-      - test-backend-mock
-      - test-frontend
+      - test-backend-integration:
+          name: Backend Integration Tests
+      - test-backend-mock:
+          name: Backend Mock Integration Tests
+      - test-frontend:
+          name: Frontend Component Tests
+      - test-e2e:
+          name: E2E Tests

@@ -11,17 +11,44 @@ import { AppService } from '../../src/app.service';
 import * as request from 'supertest';
 import { TransactionalTestContext } from 'typeorm-transactional-tests';
 import { getConnection } from 'typeorm';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import * as cookieParser from 'cookie-parser';
+import * as helmet from 'helmet';
 
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
+    this.isCiBuild = process.env.IS_CI_BUILD;
   }
 
   async setup() {
     await super.setup();
 
-    this.global.container = await new PostgreSqlContainer().start();
+    if (!this.isCiBuild) {
+      this.global.container = await new PostgreSqlContainer().start();
+    }
+
+    let databaseUrl = process.env.DATABASE_URL;
+    let dbUsername;
+    let dbPassword;
+    let dbHost;
+    let dbPort;
+    let dbDatabase;
+
+    if (databaseUrl) {
+      databaseUrl = databaseUrl.replace('postgres://', '');
+      const [username, passwordAndHost, portAndDatabase] =
+        databaseUrl.split(':');
+      const [password, host] = passwordAndHost.split('@');
+      const [port, database] = portAndDatabase.split('/');
+      dbUsername = username;
+      dbPassword = password;
+      dbHost = host;
+      dbPort = +port;
+      dbDatabase = database;
+    }
 
     const moduleFixture = await Test.createTestingModule({
       imports: [
@@ -37,11 +64,17 @@ export default class TestEnvironment extends NodeEnvironment {
         }),
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: this.global.container.getHost(),
-          port: this.global.container.getPort(),
-          username: this.global.container.getUsername(),
-          password: this.global.container.getPassword(),
-          database: this.global.container.getDatabase(),
+          host: this.isCiBuild ? dbHost : this.global.container.getHost(),
+          port: this.isCiBuild ? dbPort : this.global.container.getPort(),
+          username: this.isCiBuild
+            ? dbUsername
+            : this.global.container.getUsername(),
+          password: this.isCiBuild
+            ? dbPassword
+            : this.global.container.getPassword(),
+          database: this.isCiBuild
+            ? dbDatabase
+            : this.global.container.getDatabase(),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
           synchronize: true,
         }),
@@ -53,18 +86,34 @@ export default class TestEnvironment extends NodeEnvironment {
     }).compile();
 
     const app = moduleFixture.createNestApplication();
+
+    app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalInterceptors(
+      new ClassSerializerInterceptor(app.get(Reflector))
+    );
+    app.use(cookieParser());
+    app.use(helmet());
+
     await app.init();
 
     this.global.request = request(app.getHttpServer());
 
+    this.global.connection = getConnection();
+
     this.global.transactionalContext = new TransactionalTestContext(
-      getConnection()
+      this.global.connection
     );
   }
 
   async teardown() {
     await super.teardown();
-    await this.global.container.stop();
+
+    if (this.isCiBuild) {
+      await this.global.connection.dropDatabase();
+      await this.global.connection.close();
+    } else {
+      await this.global.container.stop();
+    }
   }
 
   getVmContext() {
