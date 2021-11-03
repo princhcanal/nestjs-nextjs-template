@@ -109,7 +109,7 @@ jobs:
           cache-key: >-
             node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
           build: npm run build
-          verify-command: cd frontend && npx verify
+          verify-command: cd frontend && npx cypress verify
       - run:
           name: Start app
           command: npm start
