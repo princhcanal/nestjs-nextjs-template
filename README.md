@@ -6,7 +6,30 @@ using [NestJS](https://nestjs.com/) as the backend framework and
 
 ## How to develop locally
 
-### Step 1: Have a PostgreSQL database instance running
+### Step 1: Set the required environment variables
+
+Create a `.env` file with the following environment variables inside the backend
+folder:
+
+`DATABASE_URL`: postgres://`dbName`:`dbPassword`@`dbHost`:`dbPort`/`dbName`
+
+`JWT_ACCESS_TOKEN_SECRET`: Secret key for signing JWT access tokens
+
+`JWT_ACCESS_TOKEN_EXPIRATION_TIME`: Expiration time in ms for signing JWT access
+tokens
+
+`JWT_REFRESH_TOKEN_SECRET`: Secret key for signing JWT refresh tokens
+
+`JWT_REFRESH_TOKEN_EXPIRATION_TIME`: Expiration time in ms for signing JWT refresh
+tokens
+
+### Step 2: Install dependencies
+
+```bash
+npm install
+```
+
+### Step 3: Have a PostgreSQL database instance running
 
 _With docker-compose_
 
@@ -20,45 +43,10 @@ _Without docker-compose_
 Install [PostgreSQL](https://www.postgresql.org/download/) if you haven't already
 and follow the steps to get a PostgreSQL database up and running
 
-### Step 2: Install backend dependencies
+### Step 4: Start the app
 
-```bash
-cd backend
-npm install
+```
+npm start:dev
 ```
 
-### Step 3: Set the required environment variables
-
-Create a `.env` file with the following environment variables inside the backend
-folder:
-
-`POSTGRES_HOST`: the Postgres host (usually `localhost`)
-
-`POSTGRES_PORT`: the Postgres port (usually `5432`)
-
-`POSTGRES_USER`: User for your Postgres database
-
-`POSTGRES_PASSWORD`: Password for your Postgres database
-
-`POSTGRES_DB`: name of your Postgres database
-
-`JWT_ACCESS_TOKEN_SECRET`: Secret key for signing JWT access tokens
-
-`JWT_ACCESS_TOKEN_EXPIRATION_TIME`: Expiration time in ms for signing JWT access
-tokens
-
-`JWT_REFRESH_TOKEN_SECRET`: Secret key for signing JWT refresh tokens
-
-`JWT_REFRESH_TOKEN_EXPIRATION_TIME`: Expiration time in ms for signing JWT refresh
-tokens
-
-### Step 4: Start up the backend server
-
-```bash
-npm run start:dev
-```
-
-### Step 5: Make sure the backend is running
-
-Visit `localhost:5000/api/v1` in your browser and make sure you see a message saying
-`Hello World!`
+### Step 5: Make sure the app is running by visiting http://localhost:3000
