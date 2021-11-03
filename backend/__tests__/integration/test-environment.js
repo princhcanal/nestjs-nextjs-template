@@ -20,26 +20,27 @@ import * as helmet from 'helmet';
 export default class TestEnvironment extends NodeEnvironment {
   constructor(config, context) {
     super(config, context);
-    this.testDatabaseUrl = process.env.TEST_DATABASE_URL;
+    this.isCiBuild = process.env.IS_CI_BUILD;
   }
 
   async setup() {
     await super.setup();
 
-    if (!this.testDatabaseUrl) {
+    if (!this.isCiBuild) {
       this.global.container = await new PostgreSqlContainer().start();
     }
 
+    let databaseUrl = process.env.DATABASE_URL;
     let dbUsername;
     let dbPassword;
     let dbHost;
     let dbPort;
     let dbDatabase;
 
-    if (this.testDatabaseUrl) {
-      this.testDatabaseUrl = this.testDatabaseUrl.replace('postgres://', '');
+    if (databaseUrl) {
+      databaseUrl = databaseUrl.replace('postgres://', '');
       const [username, passwordAndHost, portAndDatabase] =
-        this.testDatabaseUrl.split(':');
+        databaseUrl.split(':');
       const [password, host] = passwordAndHost.split('@');
       const [port, database] = portAndDatabase.split('/');
       dbUsername = username;
@@ -47,12 +48,6 @@ export default class TestEnvironment extends NodeEnvironment {
       dbHost = host;
       dbPort = +port;
       dbDatabase = database;
-      console.log('TEST_DATABASE_URL:', this.testDatabaseUrl);
-      console.log('dbUsername:', dbUsername);
-      console.log('dbPassword:', dbPassword);
-      console.log('dbHost:', dbHost);
-      console.log('dbPort:', dbPort);
-      console.log('dbDatabase', dbDatabase);
     }
 
     const moduleFixture = await Test.createTestingModule({
@@ -69,15 +64,15 @@ export default class TestEnvironment extends NodeEnvironment {
         }),
         TypeOrmModule.forRoot({
           type: 'postgres',
-          host: this.testDatabaseUrl ? dbHost : this.global.container.getHost(),
-          port: this.testDatabaseUrl ? dbPort : this.global.container.getPort(),
-          username: this.testDatabaseUrl
+          host: this.isCiBuild ? dbHost : this.global.container.getHost(),
+          port: this.isCiBuild ? dbPort : this.global.container.getPort(),
+          username: this.isCiBuild
             ? dbUsername
             : this.global.container.getUsername(),
-          password: this.testDatabaseUrl
+          password: this.isCiBuild
             ? dbPassword
             : this.global.container.getPassword(),
-          database: this.testDatabaseUrl
+          database: this.isCiBuild
             ? dbDatabase
             : this.global.container.getDatabase(),
           entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
@@ -113,7 +108,7 @@ export default class TestEnvironment extends NodeEnvironment {
   async teardown() {
     await super.teardown();
 
-    if (this.testDatabaseUrl) {
+    if (this.isCiBuild) {
       await this.global.connection.dropDatabase();
       await this.global.connection.close();
     } else {

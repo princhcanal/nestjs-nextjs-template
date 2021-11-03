@@ -7,9 +7,7 @@ orbs:
 jobs:
   test-backend-integration:
     docker:
-      - image: cimg/node:17.0.1
-        environment:
-          NODE_OPTIONS: --openssl-legacy-provider
+      - image: cimg/node:16.13
       - image: circleci/postgres
         environment:
           POSTGRES_DB: template
@@ -17,11 +15,12 @@ jobs:
           POSTGRES_PASSWORD: template
           PGDATA: /var/lib/postgresql/data/pgdata
     environment:
-      TEST_DATABASE_URL: postgres://template:template@localhost:5432/template
+      DATABASE_URL: postgres://template:template@localhost:5432/template
       JWT_ACCESS_TOKEN_SECRET: template_access
       JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+      IS_CI_BUILD: 1
     steps:
       - setup_remote_docker:
           version: 19.03.13
