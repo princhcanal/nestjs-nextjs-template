@@ -106,13 +106,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install xvfb
-          command: sudo apt update && sudo apt install xvfb
+          name: Install Cypress dependencies
+          command: sudo apt update && sudo apt-get update && sudo apt-get install libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
       - cypress/install:
           cache-key: >-
             node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
           build: npm run build
-          verify-command: Xvfb :99 & && cd frontend && npx cypress verify
+          verify-command: cd frontend && npx cypress verify
       - run:
           name: Start app
           command: npm start
