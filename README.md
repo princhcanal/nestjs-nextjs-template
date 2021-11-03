@@ -46,7 +46,7 @@ and follow the steps to get a PostgreSQL database up and running
 ### Step 4: Start the app
 
 ```
-npm start:dev
+npm run start:dev
 ```
 
 ### Step 5: Make sure the app is running by visiting http://localhost:3000
