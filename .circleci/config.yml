@@ -105,8 +105,15 @@ jobs:
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
     steps:
       - checkout
-      - cypress/install
-      - cypress/run
+      - cypress/install:
+          build: npm run build
+      - run:
+          name: Start app
+          command: npm start
+      - run:
+          name: Run E2E Tests
+          command: npm run test:e2e:ci
+          working_directory: ./frontend
 
 workflows:
   test:
