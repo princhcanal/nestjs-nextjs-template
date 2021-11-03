@@ -105,6 +105,9 @@ jobs:
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
     steps:
       - checkout
+      - run:
+        name: Install xvfb
+        command: sudo apt install xvfb
       - cypress/install:
           cache-key: >-
             node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
@@ -127,5 +130,5 @@ workflows:
           name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
-      # - test-e2e:
-      #     name: E2E Tests
+      - test-e2e:
+          name: E2E Tests
