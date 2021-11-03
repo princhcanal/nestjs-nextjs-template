@@ -107,7 +107,7 @@ jobs:
       - checkout
       - run:
           name: Install xvfb
-          command: sudo apt install xvfb
+          command: sudo apt update && sudo apt install xvfb
       - cypress/install:
           cache-key: >-
             node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
