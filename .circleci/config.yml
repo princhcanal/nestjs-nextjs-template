@@ -107,8 +107,7 @@ jobs:
       - checkout
       - cypress/install:
           cache-key: >-
-            cache-{{ arch }}-{{ .Branch }}-{{ checksum "frontend/package.json"
-            }}
+            node-v1-{{ arch }}-{{ .Branch }}-{{ checksum "./frontend/package.json" }}
           build: npm run build
 
       - run:
