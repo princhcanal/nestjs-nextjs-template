@@ -13,7 +13,8 @@
     "no-empty-interface": false,
     "no-unused-expression": true,
     "no-async-without-await": true,
-    "no-unused-variable": true
+    "no-unused-variable": true,
+    "curly": true
   },
   "jsRules": {
     "max-line-length": {
