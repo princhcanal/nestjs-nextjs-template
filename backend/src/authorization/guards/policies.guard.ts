@@ -5,7 +5,7 @@ import {
   Type,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
-import { RequestWithUser } from '../../authentication/types/requestWithUser.interface';
+import { RequestWithUser } from '../../authentication/types/request-with-user.interface';
 import { CaslAbilityFactory, AppAbility } from '../casl-ability.factory';
 import { CHECK_POLICIES_KEY } from '../check-policies.decorator';
 import { IPolicyHandler } from '../types/policy-handler.interface';

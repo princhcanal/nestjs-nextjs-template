@@ -9,12 +9,12 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { RegisterUserDTO } from './dto/register-user.dto';
-import { TokenPayload } from './types/tokenPayload.interface';
-import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
 import { AccessTokenDTO } from './dto/access-token.dto';
 import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
+import { PostgresErrorCode } from '../database/postgres-error-codes.enum';
+import { TokenPayload } from './types/token-payload.interface';
 
 @Injectable()
 export class AuthenticationService {
