@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
 
 const ssl = {
   rejectUnauthorized: false,
@@ -14,7 +15,7 @@ const ssl = {
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const databaseUrl = configService
-          .get('DATABASE_URL')
+          .get(EnvironmentVariableKeys.DATABASE_URL)
           .replace('postgres://', '');
 
         const [username, passwordAndHost, portAndDatabase] =

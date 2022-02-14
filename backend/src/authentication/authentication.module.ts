@@ -6,6 +6,7 @@ import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { AuthenticationService } from './authentication.service';
 import { AuthenticationController } from './authentication.controller';
+import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
 
 @Module({
   imports: [
@@ -16,9 +17,13 @@ import { AuthenticationController } from './authentication.controller';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
+        secret: configService.get(
+          EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+        ),
         signOptions: {
-          expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
+          expiresIn: configService.get(
+            EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
+          ),
         },
       }),
     }),

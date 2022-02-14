@@ -14,6 +14,7 @@ import { PostgresErrorCode } from '../database/postgresErrorCodes.enum';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
 import { AccessTokenDTO } from './dto/access-token.dto';
+import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
 
 @Injectable()
 export class AuthenticationService {
@@ -72,8 +73,9 @@ export class AuthenticationService {
   }
 
   public async refresh(refreshToken?: string): Promise<AccessTokenDTO> {
-    if (!refreshToken)
+    if (!refreshToken) {
       throw new UnauthorizedException({ invalidRefreshToken: true });
+    }
 
     const payload = this.jwtService.decode(refreshToken) as TokenPayload;
 
@@ -99,9 +101,11 @@ export class AuthenticationService {
 
   public getJwtAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const secret = this.configService.get('JWT_ACCESS_TOKEN_SECRET');
+    const secret = this.configService.get(
+      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+    );
     const expiresIn = this.configService.get(
-      'JWT_ACCESS_TOKEN_EXPIRATION_TIME'
+      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
     );
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });
@@ -111,9 +115,11 @@ export class AuthenticationService {
 
   public getRefreshToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const secret = this.configService.get('JWT_REFRESH_TOKEN_SECRET');
+    const secret = this.configService.get(
+      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+    );
     const expiresIn = this.configService.get(
-      'JWT_REFRESH_TOKEN_EXPIRATION_TIME'
+      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
     );
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });

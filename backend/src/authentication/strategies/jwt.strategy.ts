@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from '../../user/user.service';
 import { TokenPayload } from '../types/tokenPayload.interface';
 import { User } from '../../user/user.entity';
+import { EnvironmentVariableKeys } from '../../config/environment-variable-keys';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -15,7 +16,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      secretOrKey: configService.get(
+        EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+      ),
     });
   }
 

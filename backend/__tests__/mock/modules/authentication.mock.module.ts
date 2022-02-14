@@ -5,6 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthenticationController } from '../../../src/authentication/authentication.controller';
 import { AuthenticationService } from '../../../src/authentication/authentication.service';
 import { JwtStrategy } from '../../../src/authentication/strategies/jwt.strategy';
+import { EnvironmentVariableKeys } from '../../../src/config/environment-variable-keys';
 import { MockUserModule } from './user.mock.module';
 
 @Module({
@@ -16,9 +17,13 @@ import { MockUserModule } from './user.mock.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
+        secret: configService.get(
+          EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+        ),
         signOptions: {
-          expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME'),
+          expiresIn: configService.get(
+            EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
+          ),
         },
       }),
     }),
