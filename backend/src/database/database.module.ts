@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 const ssl = {
   rejectUnauthorized: false,
@@ -30,6 +31,7 @@ const ssl = {
           database,
           entities: [__dirname + '/../**/*.entity{.ts,.js}'],
           ssl: process.env.NODE_ENV === 'production' && ssl,
+          namingStrategy: new SnakeNamingStrategy(),
         };
       },
     }),

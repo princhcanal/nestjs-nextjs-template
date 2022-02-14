@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 const databaseUrl = process.env.DATABASE_URL.replace('postgres://', '');
 
@@ -23,6 +24,7 @@ const config: TypeOrmModuleOptions = {
     migrationsDir: __dirname + '/../database/migrations',
   },
   ssl: process.env.NODE_ENV === 'production' && ssl,
+  namingStrategy: new SnakeNamingStrategy(),
 };
 
 export = config;
