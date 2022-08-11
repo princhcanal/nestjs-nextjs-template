@@ -4,9 +4,9 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
-import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { AuthorizationModule } from './authorization/authorization.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -23,10 +23,10 @@ import { AuthorizationModule } from './authorization/authorization.module';
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
       }),
     }),
-    DatabaseModule,
     AuthenticationModule,
     UserModule,
     AuthorizationModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

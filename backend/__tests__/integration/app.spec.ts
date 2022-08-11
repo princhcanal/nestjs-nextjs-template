@@ -1,4 +1,4 @@
-const request = global.request;
+import { request } from './setup';
 
 describe('App Controller', () => {
   describe('GET /', () => {

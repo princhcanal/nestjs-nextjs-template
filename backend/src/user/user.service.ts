@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
-import { User } from './user.entity';
 import { RegisterUserDTO } from '../authentication/dto/register-user.dto';
 import * as bcrypt from 'bcrypt';
-import { UserRepository } from './user.repository';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
+import { UserDTO } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   public async findByEmail(email: string): Promise<User> {
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.prisma.user.findUnique({ where: { email } });
 
     if (user) {
       return user;
@@ -20,7 +20,7 @@ export class UserService {
   }
 
   public async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ id });
+    const user = await this.prisma.user.findUnique({ where: { id } });
 
     if (user) {
       return user;
@@ -29,10 +29,8 @@ export class UserService {
     throw new NotFoundException('User with this id does not exist');
   }
 
-  public async register(userData: RegisterUserDTO): Promise<User> {
-    const newUser = this.userRepository.create(userData);
-    await this.userRepository.save(newUser);
-    return newUser;
+  public async register(data: RegisterUserDTO): Promise<User> {
+    return this.prisma.user.create({ data });
   }
 
   public async setCurrentRefreshToken(
@@ -40,8 +38,10 @@ export class UserService {
     userId: string
   ): Promise<void> {
     const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-    await this.userRepository.update(userId, {
-      currentHashedRefreshToken,
+
+    await this.prisma.user.update({
+      data: { currentHashedRefreshToken },
+      where: { id: userId },
     });
   }
 
@@ -61,9 +61,16 @@ export class UserService {
     }
   }
 
-  public async deleteRefreshToken(userId: string): Promise<UpdateResult> {
-    return this.userRepository.update(userId, {
-      currentHashedRefreshToken: null,
+  public async deleteRefreshToken(userId: string): Promise<User> {
+    return this.prisma.user.update({
+      data: { currentHashedRefreshToken: null },
+      where: { id: userId },
     });
+  }
+
+  public convertToDTO(user: User): UserDTO {
+    const userDTO: UserDTO = user;
+
+    return userDTO;
   }
 }

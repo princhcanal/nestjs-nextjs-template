@@ -1,13 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 import { AuthenticationController } from '../../../src/authentication/authentication.controller';
 import { AccessTokenDTO } from '../../../src/authentication/dto/access-token.dto';
-import { LoginResponseDTO } from '../../../src/authentication/dto/login-response.dto';
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
-import { User } from '../../../src/user/user.entity';
-import * as bcrypt from 'bcrypt';
-
-const request = global.request;
+import { registerUser } from '../fixtures/user.fixtures';
+import { request } from '../setup';
 
 describe('Authentication Controller', () => {
   let loginRoute: string;
@@ -22,25 +19,6 @@ describe('Authentication Controller', () => {
     logoutRoute = authRoute + AuthenticationController.LOGOUT_API_ROUTE;
     refreshRoute = authRoute + AuthenticationController.REFRESH_API_ROUTE;
   });
-
-  const createUser = async (
-    user: LoginUserDTO | RegisterUserDTO
-  ): Promise<User> => {
-    const newUser = new User();
-
-    newUser.id = '';
-    newUser.email = user.email;
-    newUser.createdAt = new Date();
-    newUser.updatedAt = new Date();
-    newUser.password = await bcrypt.hash(user.password, 10);
-    newUser.currentHashedRefreshToken;
-
-    if (user instanceof RegisterUserDTO) {
-      newUser.username = user.username;
-    }
-
-    return newUser;
-  };
 
   describe('POST /login', () => {
     it('should throw bad request exception when data is invalid', async () => {
@@ -73,24 +51,7 @@ describe('Authentication Controller', () => {
 
   describe('POST /register', () => {
     it('should successfully register when username, email, and password are provided', async () => {
-      const registerUserDTO: RegisterUserDTO = {
-        username: 'new_mock_user',
-        email: 'new_mock@mock.com',
-        password: 'mock',
-      };
-
-      const registerUser = await createUser(registerUserDTO);
-
-      const { body } = await request
-        .post(registerRoute)
-        .send(registerUserDTO)
-        .expect(HttpStatus.CREATED);
-
-      const { user, accessToken, refreshToken } = body as LoginResponseDTO;
-
-      expect(user.email).toBe(registerUser.email);
-      expect(accessToken).toBeTruthy();
-      expect(refreshToken).toBeTruthy();
+      await registerUser();
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -131,29 +92,6 @@ describe('Authentication Controller', () => {
         .expect(HttpStatus.BAD_REQUEST);
     });
   });
-
-  const registerUser = async () => {
-    const registerUserDTO: RegisterUserDTO = {
-      username: 'new_mock_user',
-      email: 'new_mock@mock.com',
-      password: 'mock',
-    };
-
-    const registerUser = await createUser(registerUserDTO);
-
-    const { body } = await request
-      .post(registerRoute)
-      .send(registerUserDTO)
-      .expect(HttpStatus.CREATED);
-
-    const { user, accessToken, refreshToken } = body as LoginResponseDTO;
-
-    expect(user.email).toBe(registerUser.email);
-    expect(accessToken).toBeTruthy();
-    expect(refreshToken).toBeTruthy();
-
-    return body;
-  };
 
   describe('POST /logout', () => {
     it('should successfully log out when user is sent', async () => {

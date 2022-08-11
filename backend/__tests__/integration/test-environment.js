@@ -2,19 +2,19 @@ import * as NodeEnvironment from 'jest-environment-node';
 import { PostgreSqlContainer } from 'testcontainers';
 import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthenticationModule } from '../../src/authentication/authentication.module';
 import { UserModule } from '../../src/user/user.module';
 import * as Joi from 'joi';
 import { AppController } from '../../src/app.controller';
 import { AppService } from '../../src/app.service';
 import * as request from 'supertest';
-import { TransactionalTestContext } from 'typeorm-transactional-tests';
-import { getConnection } from 'typeorm';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
+import { PrismaModule } from '../../src/prisma/prisma.module';
+import { AuthorizationModule } from '../../src/authorization/authorization.module';
+import { execSync } from 'child_process';
 
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
@@ -27,27 +27,7 @@ export default class TestEnvironment extends NodeEnvironment {
     await super.setup();
 
     if (!this.isCiBuild) {
-      this.global.container = await new PostgreSqlContainer().start();
-    }
-
-    let databaseUrl = process.env.DATABASE_URL;
-    let dbUsername;
-    let dbPassword;
-    let dbHost;
-    let dbPort;
-    let dbDatabase;
-
-    if (databaseUrl) {
-      databaseUrl = databaseUrl.replace('postgres://', '');
-      const [username, passwordAndHost, portAndDatabase] =
-        databaseUrl.split(':');
-      const [password, host] = passwordAndHost.split('@');
-      const [port, database] = portAndDatabase.split('/');
-      dbUsername = username;
-      dbPassword = password;
-      dbHost = host;
-      dbPort = +port;
-      dbDatabase = database;
+      await this.setNewTestContainer();
     }
 
     const moduleFixture = await Test.createTestingModule({
@@ -62,24 +42,10 @@ export default class TestEnvironment extends NodeEnvironment {
             JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
           }),
         }),
-        TypeOrmModule.forRoot({
-          type: 'postgres',
-          host: this.isCiBuild ? dbHost : this.global.container.getHost(),
-          port: this.isCiBuild ? dbPort : this.global.container.getPort(),
-          username: this.isCiBuild
-            ? dbUsername
-            : this.global.container.getUsername(),
-          password: this.isCiBuild
-            ? dbPassword
-            : this.global.container.getPassword(),
-          database: this.isCiBuild
-            ? dbDatabase
-            : this.global.container.getDatabase(),
-          entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-          synchronize: true,
-        }),
         AuthenticationModule,
         UserModule,
+        AuthorizationModule,
+        PrismaModule,
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -97,37 +63,33 @@ export default class TestEnvironment extends NodeEnvironment {
     await app.init();
 
     this.global.request = request(app.getHttpServer());
-
-    this.global.connection = getConnection();
-
-    this.global.transactionalContext = new TransactionalTestContext(
-      this.global.connection
-    );
   }
 
   async teardown() {
-    await super.teardown();
-
-    if (this.isCiBuild) {
-      await this.global.connection.dropDatabase();
-      await this.global.connection.close();
-    } else {
+    if (this.global.container) {
       await this.global.container.stop();
     }
+    await super.teardown();
   }
 
   getVmContext() {
     return super.getVmContext();
   }
 
-  // TODO: log in before all tests
-  async handleTestEvent(event, state) {
-    if (event.name === 'test_start') {
-      // Start transaction
-      await this.global.transactionalContext.start();
-    } else if (event.name === 'test_done') {
-      // Rollback transaction
-      await this.global.transactionalContext.finish();
+  async handleTestEvent(event) {
+    if (event.name === 'test_done') {
+      // reset db
+      execSync('prisma migrate reset --force');
     }
+  }
+
+  setDbEnvVars(container) {
+    process.env.DATABASE_URL = `postgres://${container.getUsername()}:${container.getPassword()}@${container.getHost()}:${container.getPort()}/${container.getDatabase()}`;
+  }
+
+  async setNewTestContainer() {
+    this.global.container = await new PostgreSqlContainer().start();
+    this.setDbEnvVars(this.global.container);
+    execSync(`npm run prisma:migrate:dev init`);
   }
 }
