@@ -41,27 +41,6 @@ jobs:
           path: ./backend/reports/junit/
       - store_artifacts:
           path: ./backend/reports/junit
-  test-backend-mock:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - run:
-          name: Install backend dependencies
-          command: npm install
-          working_directory: ./backend
-      - run:
-          name: Install JUnit coverage reporter
-          command: npm install -D jest-junit
-      - run:
-          name: Run backend mock tests
-          command: npm run test:backend:mock:ci
-          environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
-      - store_test_results:
-          path: ./backend/reports/junit/
-      - store_artifacts:
-          path: ./backend/reports/junit
   test-frontend:
     executor:
       name: node/default
@@ -122,8 +101,6 @@ workflows:
     jobs:
       - test-backend-integration:
           name: Backend Integration Tests
-      - test-backend-mock:
-          name: Backend Mock Integration Tests
       - test-frontend:
           name: Frontend Component Tests
       - test-e2e:

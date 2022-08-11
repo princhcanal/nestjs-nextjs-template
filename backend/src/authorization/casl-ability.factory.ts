@@ -2,14 +2,13 @@ import {
   Ability,
   AbilityBuilder,
   AbilityClass,
-  ExtractSubjectType,
   InferSubjects,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { User } from '../user/user.entity';
+import { User } from '@prisma/client';
 import { Action } from './types/action.enum';
 
-type Subjects = InferSubjects<typeof User> | 'all';
+type Subjects = InferSubjects<User> | 'all';
 
 export type AppAbility = Ability<[Action, Subjects]>;
 
@@ -26,9 +25,6 @@ export class CaslAbilityFactory {
       cannot(Action.Manage, 'all');
     }
 
-    return build({
-      detectSubjectType: (item) =>
-        item.constructor as ExtractSubjectType<Subjects>,
-    });
+    return build();
   }
 }

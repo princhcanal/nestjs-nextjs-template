@@ -2,14 +2,12 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
-import { Test, SuperTest } from 'supertest';
 import * as helmet from 'helmet';
 import {
   DocumentBuilder,
   SwaggerModule,
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
-// import * as csurf from 'csurf';
 
 // FIXME: cookies not setting in production
 async function bootstrap() {
@@ -29,10 +27,10 @@ async function bootstrap() {
   }
 
   app.useGlobalPipes(new ValidationPipe());
+  // TODO: use global auth guard
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.use(cookieParser());
   app.use(helmet());
-  // app.use(csurf({ cookie: true }));
 
   app.setGlobalPrefix('/api/v1');
 
@@ -52,12 +50,3 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 5001);
 }
 bootstrap();
-
-declare global {
-  namespace NodeJS {
-    interface Global {
-      // used to add type in tests
-      request: SuperTest<Test>;
-    }
-  }
-}

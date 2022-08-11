@@ -13,8 +13,9 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
 import { AccessTokenDTO } from './dto/access-token.dto';
 import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
-import { PostgresErrorCode } from '../database/postgres-error-codes.enum';
 import { TokenPayload } from './types/token-payload.interface';
+import { User } from '@prisma/client';
+import { PostgresErrorCode } from '../constants/postgress-error-codes.enum';
 
 @Injectable()
 export class AuthenticationService {
@@ -35,7 +36,7 @@ export class AuthenticationService {
 
     await this.userService.setCurrentRefreshToken(refreshToken, user.id);
 
-    const userDTO = user.toDTO();
+    const userDTO = this.userService.convertToDTO(user);
 
     return {
       user: userDTO,
@@ -93,7 +94,10 @@ export class AuthenticationService {
     return { accessToken };
   }
 
-  public async getAuthenticatedUser(email: string, plainTextPassword: string) {
+  public async getAuthenticatedUser(
+    email: string,
+    plainTextPassword: string
+  ): Promise<User> {
     const user = await this.userService.findByEmail(email);
     await this.verifyPassword(plainTextPassword, user.password);
     return user;

@@ -10,6 +10,7 @@ const config: Config.InitialOptions = {
   collectCoverageFrom: ['**/*.(t|j)s'],
   coverageDirectory: './coverage',
   testEnvironment: './test-environment',
+  setupFilesAfterEnv: ['./setup.ts'],
 };
 
 export default config;
