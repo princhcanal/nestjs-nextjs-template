@@ -8,8 +8,8 @@ import {
   SwaggerModule,
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
+import { JwtAuthenticationGuard } from './authentication/guards/jwt-authentication.guard';
 
-// FIXME: cookies not setting in production
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const baseClientUrl = process.env.BASE_CLIENT_URL;
@@ -26,9 +26,10 @@ async function bootstrap() {
     });
   }
 
+  const reflector = app.get(Reflector);
   app.useGlobalPipes(new ValidationPipe());
-  // TODO: use global auth guard
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+  app.useGlobalGuards(new JwtAuthenticationGuard(reflector));
   app.use(cookieParser());
   app.use(helmet());
 

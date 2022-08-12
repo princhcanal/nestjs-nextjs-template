@@ -13,11 +13,18 @@ export const useLogin = () => {
 
   return useMutation((loginDTO: LoginUserDTO) => api.logIn(loginDTO), {
     onSuccess: ({ data }) => {
-      const { user, accessToken, refreshToken } = data;
+      const { user, tokens } = data;
+      const { accessToken, refreshToken } = tokens;
 
       setUser(user);
-      localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
-      localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+
+      if (accessToken) {
+        localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
+      }
+
+      if (refreshToken) {
+        localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
+      }
 
       router.push('/');
     },

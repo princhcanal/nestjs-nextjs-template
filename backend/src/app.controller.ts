@@ -1,5 +1,6 @@
 import { Controller, Get, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Public } from './shared/decorators/public.decorator';
 
 @Controller()
 export class AppController {
@@ -7,6 +8,7 @@ export class AppController {
 
   constructor(private readonly appService: AppService) {}
 
+  @Public()
   @Get()
   public getHello(): string {
     this.logger.log('Hello World!');

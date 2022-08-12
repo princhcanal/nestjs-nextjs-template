@@ -2,11 +2,10 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthenticationService } from './authentication.service';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { ApiBody } from '@nestjs/swagger';
 import { LoginResponseDTO } from './dto/login-response.dto';
 import { UserDTO } from '../user/dto/user.dto';
-import { RefreshTokenDTO } from './dto/refresh-token.dto';
-import { AccessTokenDTO } from './dto/access-token.dto';
+import { Public } from '../shared/decorators/public.decorator';
+import { TokensDTO } from './dto/tokens.dto';
 
 @Controller(AuthenticationController.AUTH_API_ROUTE)
 export class AuthenticationController {
@@ -18,7 +17,7 @@ export class AuthenticationController {
 
   constructor(private readonly authenticationService: AuthenticationService) {}
 
-  @ApiBody({ type: RegisterUserDTO })
+  @Public()
   @Post(AuthenticationController.REGISTER_API_ROUTE)
   public register(
     @Body() registerUserDTO: RegisterUserDTO
@@ -26,26 +25,24 @@ export class AuthenticationController {
     return this.authenticationService.register(registerUserDTO);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: LoginUserDTO })
   @Post(AuthenticationController.LOGIN_API_ROUTE)
   public logIn(@Body() loginUserDTO: LoginUserDTO): Promise<LoginResponseDTO> {
     return this.authenticationService.login(loginUserDTO);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: UserDTO })
   @Post(AuthenticationController.LOGOUT_API_ROUTE)
   public logOut(@Body() user: UserDTO): void {
     this.authenticationService.logout(user.id);
   }
 
+  @Public()
   @HttpCode(HttpStatus.OK)
-  @ApiBody({ type: RefreshTokenDTO })
   @Post(AuthenticationController.REFRESH_API_ROUTE)
-  public refresh(
-    @Body() { refreshToken }: RefreshTokenDTO
-  ): Promise<AccessTokenDTO> {
+  public refresh(@Body() { refreshToken }: TokensDTO): Promise<TokensDTO> {
     return this.authenticationService.refresh(refreshToken);
   }
 }
