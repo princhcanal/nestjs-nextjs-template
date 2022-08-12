@@ -9,12 +9,11 @@ common.ts
 configuration.ts
 git_push.sh
 index.ts
-models/access-token-dto.ts
 models/index.ts
 models/login-response-dto.ts
 models/login-user-dto.ts
-models/refresh-token-dto.ts
 models/register-user-dto.ts
+models/tokens-dto.ts
 models/user-dto.ts
 package.json
 tsconfig.json

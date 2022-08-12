@@ -15,13 +15,19 @@
 /**
  *
  * @export
- * @interface AccessTokenDTO
+ * @interface TokensDTO
  */
-export interface AccessTokenDTO {
+export interface TokensDTO {
   /**
    *
    * @type {string}
-   * @memberof AccessTokenDTO
+   * @memberof TokensDTO
    */
   accessToken?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof TokensDTO
+   */
+  refreshToken?: string;
 }

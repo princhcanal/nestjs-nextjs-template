@@ -30,21 +30,18 @@ export const createUser = async (
   return newUser;
 };
 
-export const registerUser = async () => {
-  const registerUserDTO: RegisterUserDTO = {
-    username: 'test_user',
-    email: 'testk@test.com',
-    password: 'test',
-  };
-
-  const registerUser = await createUser(registerUserDTO);
+export const registerUser = async (
+  dto: RegisterUserDTO
+): Promise<LoginResponseDTO> => {
+  const registerUser = await createUser(dto);
 
   const { body } = await request
     .post(registerRoute)
-    .send(registerUserDTO)
+    .send(dto)
     .expect(HttpStatus.CREATED);
 
-  const { user, accessToken, refreshToken } = body as LoginResponseDTO;
+  const { user, tokens } = body as LoginResponseDTO;
+  const { accessToken, refreshToken } = tokens;
 
   expect(user.email).toBe(registerUser.email);
   expect(accessToken).toBeTruthy();

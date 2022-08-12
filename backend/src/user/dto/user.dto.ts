@@ -2,21 +2,21 @@ import { IsDateString, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class UserDTO {
   @IsString()
-  @IsNotEmpty({ message: 'Email is required' })
+  @IsNotEmpty()
   public id: string;
 
-  @IsDateString(undefined, { message: 'Invalid date string' })
+  @IsDateString()
   public createdAt: Date;
 
-  @IsDateString(undefined, { message: 'Invalid date string' })
+  @IsDateString()
   public updatedAt: Date;
 
-  @IsEmail({}, { message: 'Invalid email' })
+  @IsEmail()
   @IsString()
-  @IsNotEmpty({ message: 'Email is required' })
+  @IsNotEmpty()
   public email: string;
 
   @IsString()
-  @IsNotEmpty({ message: 'Email is required' })
+  @IsNotEmpty()
   public username: string;
 }

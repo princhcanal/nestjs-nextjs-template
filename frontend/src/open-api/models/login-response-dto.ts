@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+import { TokensDTO } from './tokens-dto';
 import { UserDTO } from './user-dto';
 
 /**
@@ -28,14 +29,8 @@ export interface LoginResponseDTO {
   user: UserDTO;
   /**
    *
-   * @type {string}
+   * @type {TokensDTO}
    * @memberof LoginResponseDTO
    */
-  accessToken: string;
-  /**
-   *
-   * @type {string}
-   * @memberof LoginResponseDTO
-   */
-  refreshToken: string;
+  tokens: TokensDTO;
 }

@@ -11,11 +11,11 @@ import { UserService } from '../user/user.service';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
-import { AccessTokenDTO } from './dto/access-token.dto';
 import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
 import { TokenPayload } from './types/token-payload.interface';
 import { User } from '@prisma/client';
-import { PostgresErrorCode } from '../constants/postgress-error-codes.enum';
+import { PostgresErrorCode } from '../shared/constants/postgress-error-codes.enum';
+import { TokensDTO } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -40,8 +40,10 @@ export class AuthenticationService {
 
     return {
       user: userDTO,
-      accessToken,
-      refreshToken,
+      tokens: {
+        accessToken,
+        refreshToken,
+      },
     };
   }
 
@@ -73,7 +75,7 @@ export class AuthenticationService {
     this.userService.deleteRefreshToken(userId);
   }
 
-  public async refresh(refreshToken?: string): Promise<AccessTokenDTO> {
+  public async refresh(refreshToken?: string): Promise<TokensDTO> {
     if (!refreshToken) {
       throw new UnauthorizedException({ invalidRefreshToken: true });
     }

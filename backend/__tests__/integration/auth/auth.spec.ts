@@ -1,18 +1,23 @@
 import { HttpStatus } from '@nestjs/common';
 import { AuthenticationController } from '../../../src/authentication/authentication.controller';
-import { AccessTokenDTO } from '../../../src/authentication/dto/access-token.dto';
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
+import { TokensDTO } from '../../../src/authentication/dto/tokens.dto';
 import { registerUser } from '../fixtures/user.fixtures';
 import { request } from '../setup';
 
-describe('Authentication Controller', () => {
+describe('auth.spec.ts - Authentication Controller', () => {
   let loginRoute: string;
   let registerRoute: string;
   let logoutRoute: string;
   let refreshRoute: string;
+  const registerUserDTO: RegisterUserDTO = {
+    username: 'test_user',
+    email: 'testk@test.com',
+    password: 'test',
+  };
 
-  beforeAll(async () => {
+  beforeAll(() => {
     const authRoute = AuthenticationController.AUTH_API_ROUTE;
     loginRoute = authRoute + AuthenticationController.LOGIN_API_ROUTE;
     registerRoute = authRoute + AuthenticationController.REGISTER_API_ROUTE;
@@ -51,7 +56,7 @@ describe('Authentication Controller', () => {
 
   describe('POST /register', () => {
     it('should successfully register when username, email, and password are provided', async () => {
-      await registerUser();
+      await registerUser(registerUserDTO);
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -95,7 +100,7 @@ describe('Authentication Controller', () => {
 
   describe('POST /logout', () => {
     it('should successfully log out when user is sent', async () => {
-      const { user } = await registerUser();
+      const { user } = await registerUser(registerUserDTO);
 
       await request.post(logoutRoute).send(user).expect(HttpStatus.OK);
     });
@@ -107,19 +112,19 @@ describe('Authentication Controller', () => {
 
   describe('POST /refresh', () => {
     it('should refresh access token', async () => {
-      const { refreshToken } = await registerUser();
+      const { tokens } = await registerUser(registerUserDTO);
 
       const { body } = await request
         .post(refreshRoute)
-        .send({ refreshToken })
+        .send(tokens)
         .expect(HttpStatus.OK);
-      const { accessToken } = body as AccessTokenDTO;
+      const { accessToken } = body as TokensDTO;
 
       expect(accessToken).toBeTruthy();
     });
 
     it('should not refresh access token when no refresh token is sent', async () => {
-      await request.post(refreshRoute).expect(HttpStatus.BAD_REQUEST);
+      await request.post(refreshRoute).expect(HttpStatus.UNAUTHORIZED);
     });
   });
 });
