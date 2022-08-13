@@ -11,7 +11,7 @@ import { UserService } from '../user/user.service';
 import { RegisterUserDTO } from './dto/register-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { LoginResponseDTO } from './dto/login-response.dto';
-import { EnvironmentVariableKeys } from '../config/environment-variable-keys';
+import { EnvironmentVariableKeys } from '../shared/constants/environment-variable-keys';
 import { TokenPayload } from './types/token-payload.interface';
 import { User } from '@prisma/client';
 import { PostgresErrorCode } from '../shared/constants/postgress-error-codes.enum';
@@ -107,10 +107,10 @@ export class AuthenticationService {
 
   public getJwtAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const secret = this.configService.get(
+    const secret = this.configService.get<string>(
       EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
     );
-    const expiresIn = this.configService.get(
+    const expiresIn = this.configService.get<string>(
       EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
     );
 
@@ -121,10 +121,10 @@ export class AuthenticationService {
 
   public getRefreshToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const secret = this.configService.get(
+    const secret = this.configService.get<string>(
       EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
     );
-    const expiresIn = this.configService.get(
+    const expiresIn = this.configService.get<string>(
       EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
     );
 

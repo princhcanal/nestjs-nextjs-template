@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/princhcanal/nestjs-nextjs-template#readme",
   "devDependencies": {
-    "concurrently": "^6.2.1"
-  },
-  "dependencies": {}
+    "concurrently": "^6.2.1",
+    "dotenv-cli": "^6.0.0"
+  }
 }

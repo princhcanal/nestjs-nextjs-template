@@ -1,9 +1,10 @@
 import { HttpStatus } from '@nestjs/common';
 import { AuthenticationController } from '../../../src/authentication/authentication.controller';
+import { LoginResponseDTO } from '../../../src/authentication/dto/login-response.dto';
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
 import { TokensDTO } from '../../../src/authentication/dto/tokens.dto';
-import { registerUser } from '../fixtures/user.fixtures';
+import { registerUser, testUser } from '../fixtures/user.fixtures';
 import { request } from '../setup';
 
 describe('auth.spec.ts - Authentication Controller', () => {
@@ -11,11 +12,6 @@ describe('auth.spec.ts - Authentication Controller', () => {
   let registerRoute: string;
   let logoutRoute: string;
   let refreshRoute: string;
-  const registerUserDTO: RegisterUserDTO = {
-    username: 'test_user',
-    email: 'testk@test.com',
-    password: 'test',
-  };
 
   beforeAll(() => {
     const authRoute = AuthenticationController.AUTH_API_ROUTE;
@@ -26,6 +22,23 @@ describe('auth.spec.ts - Authentication Controller', () => {
   });
 
   describe('POST /login', () => {
+    it('should log in successfully', async () => {
+      const loginUserDTO: LoginUserDTO = {
+        email: 'test@test.com',
+        password: 'test',
+      };
+
+      const { body } = await request
+        .post(loginRoute)
+        .send(loginUserDTO)
+        .expect(HttpStatus.OK);
+      const { user, tokens } = body as LoginResponseDTO;
+
+      expect(user.email).toBe(loginUserDTO.email);
+      expect(tokens.accessToken).toBeTruthy();
+      expect(tokens.refreshToken).toBeTruthy();
+    });
+
     it('should throw bad request exception when data is invalid', async () => {
       const loginUserDTOWithoutEmail = {
         password: 'mock',
@@ -56,7 +69,7 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /register', () => {
     it('should successfully register when username, email, and password are provided', async () => {
-      await registerUser(registerUserDTO);
+      await registerUser(testUser);
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -100,7 +113,7 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /logout', () => {
     it('should successfully log out when user is sent', async () => {
-      const { user } = await registerUser(registerUserDTO);
+      const { user } = await registerUser(testUser);
 
       await request.post(logoutRoute).send(user).expect(HttpStatus.OK);
     });
@@ -112,7 +125,7 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /refresh', () => {
     it('should refresh access token', async () => {
-      const { tokens } = await registerUser(registerUserDTO);
+      const { tokens } = await registerUser(testUser);
 
       const { body } = await request
         .post(refreshRoute)
