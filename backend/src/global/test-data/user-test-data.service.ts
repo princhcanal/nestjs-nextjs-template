@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ActiveProfilesService } from '../active-profiles/active-profiles.service';
 import { RegisterUserDTO } from '../../authentication/dto/register-user.dto';
 import { PrismaService } from '../../global/prisma/prisma.service';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { CustomLogger } from '../../shared/custom-logger';
 
 export const testUser: RegisterUserDTO = {

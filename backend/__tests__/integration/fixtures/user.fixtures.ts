@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { HttpStatus } from '@nestjs/common';
 import { LoginResponseDTO } from '../../../src/authentication/dto/login-response.dto';
 import { AuthenticationController } from '../../../src/authentication/authentication.controller';
