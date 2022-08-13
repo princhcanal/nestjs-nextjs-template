@@ -12,9 +12,12 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
 import * as helmet from 'helmet';
-import { PrismaModule } from '../../src/prisma/prisma.module';
+import { PrismaModule } from '../../src/global/prisma/prisma.module';
 import { AuthorizationModule } from '../../src/authorization/authorization.module';
 import { execSync } from 'child_process';
+import { ActiveProfilesModule } from '../../src/global/active-profiles/active-profiles.module';
+import { JwtAuthenticationGuard } from '../../src/authentication/guards/jwt-authentication.guard';
+import { TestDataModule } from '../../src/global/test-data/test-data.module';
 
 // TODO: convert to typescript
 export default class TestEnvironment extends NodeEnvironment {
@@ -33,6 +36,8 @@ export default class TestEnvironment extends NodeEnvironment {
     const moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
+          envFilePath: ['.env', '.env.local'],
+          isGlobal: true,
           validationSchema: Joi.object({
             DATABASE_URL: Joi.string().required(),
             PORT: Joi.number(),
@@ -46,6 +51,8 @@ export default class TestEnvironment extends NodeEnvironment {
         UserModule,
         AuthorizationModule,
         PrismaModule,
+        ActiveProfilesModule,
+        TestDataModule,
       ],
       controllers: [AppController],
       providers: [AppService],
@@ -53,10 +60,10 @@ export default class TestEnvironment extends NodeEnvironment {
 
     const app = moduleFixture.createNestApplication();
 
+    const reflector = app.get(Reflector);
     app.useGlobalPipes(new ValidationPipe());
-    app.useGlobalInterceptors(
-      new ClassSerializerInterceptor(app.get(Reflector))
-    );
+    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+    app.useGlobalGuards(new JwtAuthenticationGuard(reflector));
     app.use(cookieParser());
     app.use(helmet());
 

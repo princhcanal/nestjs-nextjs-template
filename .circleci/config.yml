@@ -21,6 +21,7 @@ jobs:
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
       IS_CI_BUILD: 1
+      ACTIVE_PROFILES: test
     steps:
       - setup_remote_docker:
           version: 19.03.13
@@ -34,7 +35,7 @@ jobs:
           command: npm install -D jest-junit
       - run:
           name: Run backend integration tests
-          command: npm run test:backend:ci
+          command: npm run migration && npm run test:backend:ci
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports/junit/
       - store_test_results:
@@ -77,6 +78,7 @@ jobs:
       JWT_ACCESS_TOKEN_EXPIRATION_TIME: 86400
       JWT_REFRESH_TOKEN_SECRET: template_refresh
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: 31540000
+      ACTIVE_PROFILES: test_data,e2e
     steps:
       - checkout
       - run:
@@ -89,7 +91,7 @@ jobs:
           verify-command: cd frontend && npx cypress verify
       - run:
           name: Start app
-          command: npm start
+          command: npm run migration && npm start
           background: true
       - run:
           name: Run E2E Tests

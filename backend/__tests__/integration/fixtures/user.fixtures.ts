@@ -10,6 +10,12 @@ import { request } from '../setup';
 const authRoute = AuthenticationController.AUTH_API_ROUTE;
 const registerRoute = authRoute + AuthenticationController.REGISTER_API_ROUTE;
 
+export const testUser: RegisterUserDTO = {
+  username: 'test_user',
+  email: 'test_user@test.com',
+  password: 'test',
+};
+
 export const createUser = async (
   user: LoginUserDTO | RegisterUserDTO
 ): Promise<User> => {
