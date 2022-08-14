@@ -6,27 +6,26 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { ApiProvider } from '../shared/providers/ApiProvider';
 import { useGlobalStore } from '../shared/stores';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { UserDTO } from 'generated-api';
+import { useEffect } from 'react';
 
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [user, setUser] = useState<UserDTO | undefined>(undefined);
   const getUser = useGlobalStore((state) => state.getUser);
   const router = useRouter();
 
   useEffect(() => {
-    setUser(getUser());
-  }, [setUser, getUser]);
+    const user = getUser();
 
-  if (pageProps.protected && user) {
-    router.push('/login');
-  }
+    // FIXME: routes flash
+    if (pageProps.protected && !user) {
+      router.replace('/login');
+    }
 
-  if (pageProps.dontShowUser && user) {
-    router.replace('/');
-  }
+    if (pageProps.dontShowUser && user) {
+      router.replace('/');
+    }
+  }, [getUser, pageProps, router]);
 
   return (
     <ChakraProvider>

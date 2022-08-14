@@ -91,9 +91,10 @@ export class AuthenticationService {
       payload.userId
     );
 
-    const accessToken = this.getJwtAccessToken(user.id);
+    const newAccessToken = this.getJwtAccessToken(user.id);
+    const newRefreshToken = this.getRefreshToken(user.id);
 
-    return { accessToken };
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 
   public async getAuthenticatedUser(
@@ -122,10 +123,10 @@ export class AuthenticationService {
   public getRefreshToken(userId: string) {
     const payload: TokenPayload = { userId };
     const secret = this.configService.get<string>(
-      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_SECRET
+      EnvironmentVariableKeys.JWT_REFRESH_TOKEN_SECRET
     );
     const expiresIn = this.configService.get<string>(
-      EnvironmentVariableKeys.JWT_ACCESS_TOKEN_EXPIRATION_TIME
+      EnvironmentVariableKeys.JWT_REFRESH_TOKEN_EXPIRATION_TIME
     );
 
     const token = this.jwtService.sign(payload, { secret, expiresIn });

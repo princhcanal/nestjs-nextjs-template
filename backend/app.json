@@ -20,7 +20,8 @@
       "generator": "secret"
     },
     "JWT_REFRESH_TOKEN_EXPIRATION_TIME": "31540000",
-    "PROJECT_PATH": "backend"
+    "PROJECT_PATH": "backend",
+    "ACTIVE_PROFILES": "test_data"
   },
   "buildpacks": [
     {

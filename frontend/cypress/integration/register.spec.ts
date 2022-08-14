@@ -59,8 +59,7 @@ describe('register.spec.ts - Register Form', () => {
     cy.get('.chakra-heading').contains('Home').should('exist');
   });
 
-  // TODO: enable test after TEMPL-50
-  xit('should not register with existing username and email', () => {
+  it('should not register with existing username and email', () => {
     cy.register('test', 'test@test.com', 'test', true);
   });
 });
