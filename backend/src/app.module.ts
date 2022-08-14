@@ -9,6 +9,7 @@ import { AuthorizationModule } from './authorization/authorization.module';
 import { PrismaModule } from './global/prisma/prisma.module';
 import { ActiveProfilesModule } from './global/active-profiles/active-profiles.module';
 import { TestDataModule } from './global/test-data/test-data.module';
+import { E2EModule } from './global/e2e/e2e.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { TestDataModule } from './global/test-data/test-data.module';
     PrismaModule,
     ActiveProfilesModule,
     TestDataModule,
+    E2EModule,
   ],
   controllers: [AppController],
   providers: [AppService],

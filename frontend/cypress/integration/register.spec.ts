@@ -1,5 +1,6 @@
-describe('Register Form', () => {
+describe('register.spec.ts - Register Form', () => {
   beforeEach(() => {
+    cy.resetTestData();
     cy.visit('/register');
   });
 
@@ -12,11 +13,11 @@ describe('Register Form', () => {
     cy.get('input').eq(2).should('have.attr', 'name', 'password');
     cy.get('input').eq(2).should('have.attr', 'type', 'password');
 
-    cy.get('[data-cy="register-submit-btn"]').should('exist');
+    cy.getBySel('register-submit-btn').should('exist');
   });
 
   it('should show errors when fields are empty', () => {
-    cy.get('[data-cy="register-submit-btn"]').click();
+    cy.getBySel('register-submit-btn').click();
 
     cy.get('.chakra-form__error-message')
       .eq(0)
@@ -50,5 +51,16 @@ describe('Register Form', () => {
     cy.get('.chakra-form__error-message')
       .contains('Password must be at least 4 characters')
       .should('exist');
+  });
+
+  it('should successfully register', () => {
+    cy.register('test2', 'test2@test.com', 'test');
+
+    cy.get('.chakra-heading').contains('Home').should('exist');
+  });
+
+  // TODO: enable test after TEMPL-50
+  xit('should not register with existing username and email', () => {
+    cy.register('test', 'test@test.com', 'test', true);
   });
 });

@@ -7,7 +7,7 @@ export const Home = () => {
 
   return (
     <Center w='100%' h='100vh' flexDir='column'>
-      <Heading data-cy='home'>Home</Heading>
+      <Heading>Home</Heading>
       <Button onClick={() => logout()}>Log Out</Button>
     </Center>
   );

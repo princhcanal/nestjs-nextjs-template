@@ -23,7 +23,7 @@ export class ActiveProfilesService {
     return this.isProfileActive(Profiles.PROD);
   }
 
-  private isProfileActive(profile: Profiles): boolean {
+  public isProfileActive(profile: Profiles): boolean {
     const profiles: Profiles[] = this.configService
       .get(EnvironmentVariableKeys.ACTIVE_PROFILES)
       ?.split(',');
