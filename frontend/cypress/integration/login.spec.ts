@@ -1,26 +1,28 @@
-describe('Login Form', () => {
+describe('login.spec.ts - Login Form', () => {
   beforeEach(() => {
+    cy.resetTestData();
     cy.visit('/login');
-    cy.intercept('/api/v1/auth/login').as('login');
+    cy.intercept('/api/v1/auth/logout').as('logout');
   });
 
-  xit('should successfully log in', () => {
-    cy.get('input').first().should('have.attr', 'name', 'email');
-    cy.get('input').first().should('have.attr', 'type', 'email');
-    cy.get('input').first().type('test@test.com');
+  it('should successfully log in', () => {
+    cy.login('test@test.com', 'test');
+    cy.get('.chakra-heading').contains('Home').should('exist');
+  });
 
-    cy.get('input').eq(1).should('have.attr', 'name', 'password');
-    cy.get('input').eq(1).should('have.attr', 'type', 'password');
-    cy.get('input').eq(1).type('test');
+  it('should successfully log out', () => {
+    cy.login('test@test.com', 'test');
 
-    cy.get('[data-cy="login-submit-btn"]').should('exist').click();
-    cy.wait('@login');
+    // this check is needed for the "Log Out" button to be detected by cypress
+    cy.get('.chakra-heading').contains('Home').should('exist');
+    cy.get('.chakra-button').contains('Log Out').click();
+    cy.wait('@logout');
 
-    cy.get('[data-cy="home"]').contains('Home').should('exist');
+    cy.url().should('contain', 'login');
   });
 
   it('should show errors when fields are empty', () => {
-    cy.get('[data-cy="login-submit-btn"]').click();
+    cy.getBySel('login-submit-btn').click();
 
     cy.get('.chakra-form__error-message')
       .eq(0)

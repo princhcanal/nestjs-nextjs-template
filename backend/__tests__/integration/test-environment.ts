@@ -22,6 +22,7 @@ import { ActiveProfilesModule } from '../../src/global/active-profiles/active-pr
 import { JwtAuthenticationGuard } from '../../src/authentication/guards/jwt-authentication.guard';
 import { TestDataModule } from '../../src/global/test-data/test-data.module';
 import { Event } from 'jest-circus';
+import { E2EModule } from '../../src/global/e2e/e2e.module';
 
 export default class TestEnvironment extends NodeEnvironment {
   private readonly isCiBuild = process.env.IS_CI_BUILD;
@@ -58,6 +59,7 @@ export default class TestEnvironment extends NodeEnvironment {
         PrismaModule,
         ActiveProfilesModule,
         TestDataModule,
+        E2EModule,
       ],
       controllers: [AppController],
       providers: [AppService],

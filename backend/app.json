@@ -19,6 +19,15 @@
       "description": "Secret for refresh token",
       "generator": "secret"
     },
-    "JWT_REFRESH_TOKEN_EXPIRATION_TIME": "31540000"
-  }
+    "JWT_REFRESH_TOKEN_EXPIRATION_TIME": "31540000",
+    "PROJECT_PATH": "backend"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/timanovsky/subdir-heroku-buildpack"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
 }
