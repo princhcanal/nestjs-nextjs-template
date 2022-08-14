@@ -19,6 +19,10 @@ export class ActiveProfilesService {
     return this.isProfileActive(Profiles.E2E);
   }
 
+  public isProdProfileActive(): boolean {
+    return this.isProfileActive(Profiles.PROD);
+  }
+
   private isProfileActive(profile: Profiles): boolean {
     const profiles: Profiles[] = this.configService
       .get(EnvironmentVariableKeys.ACTIVE_PROFILES)
