@@ -2,7 +2,9 @@ import { axiosInstance as axios } from '../axios';
 import { AlertStatus, useToast } from '@chakra-ui/react';
 import { AxiosResponse } from 'axios';
 import { LocalStorageKeys } from '../enums/localStorageKeys';
-import { TokensDTO } from 'generated-api';
+import { TokensDTO, UserDTO } from 'generated-api';
+import { useRouter } from 'next/router';
+import { useGlobalStore } from '../stores';
 
 interface UseAxiosOptions {
   showToastOnError?: boolean;
@@ -17,6 +19,8 @@ const DEFAULT_USE_AXIOS_OPTIONS = {
   showToastOnSuccess: false,
 };
 
+let requestCount = 0;
+
 export const useAxios = ({
   showToastOnError,
   showToastOnSuccess,
@@ -25,16 +29,21 @@ export const useAxios = ({
   toastDescription,
 }: UseAxiosOptions = DEFAULT_USE_AXIOS_OPTIONS) => {
   const toast = useToast();
+  const router = useRouter();
+  const getUser = useGlobalStore((state) => state.getUser);
 
-  axios.interceptors.request.use((config) => {
-    const accessToken = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
+  axios.interceptors.request.use(
+    (config) => {
+      const accessToken = localStorage.getItem(LocalStorageKeys.ACCESS_TOKEN);
 
-    if (accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+      if (accessToken && config.headers) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
 
-    return config;
-  });
+      return config;
+    },
+    (e) => Promise.reject(e)
+  );
 
   axios.interceptors.response.use(
     (res: AxiosResponse<any>) => {
@@ -61,13 +70,28 @@ export const useAxios = ({
       return res;
     },
     async (e: any) => {
+      // this logic is needed because axios reruns this interceptor function four times
+      if (requestCount > 0) {
+        requestCount += 1;
+        if (requestCount === 4) {
+          requestCount = 0;
+        }
+        return Promise.reject(e);
+      }
+      requestCount += 1;
+
       if (e) {
         const { message, statusCode, invalidRefreshToken } = e.response.data;
         const refreshToken = localStorage.getItem(
           LocalStorageKeys.REFRESH_TOKEN
         );
 
-        if (refreshToken && statusCode === 401 && !invalidRefreshToken) {
+        if (
+          refreshToken &&
+          statusCode === 401 &&
+          !invalidRefreshToken &&
+          !e.config._retry
+        ) {
           try {
             e.config._retry = true;
 
@@ -120,7 +144,19 @@ export const useAxios = ({
           });
         }
 
-        Promise.reject(e);
+        if (invalidRefreshToken) {
+          const user = getUser();
+          if (user) {
+            await axios.post<UserDTO>('/auth/logout', user);
+          }
+
+          localStorage.removeItem(LocalStorageKeys.USER);
+          localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
+          localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
+          router.reload();
+        }
+
+        return Promise.reject(e);
       }
     }
   );
