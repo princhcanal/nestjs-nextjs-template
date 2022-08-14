@@ -1,4 +1,7 @@
 import type { Config } from '@jest/types';
+import nextJest from 'next/jest';
+
+const createJestConfig = nextJest({ dir: './' });
 
 const config: Config.InitialOptions = {
   collectCoverageFrom: [
@@ -38,4 +41,4 @@ const config: Config.InitialOptions = {
   testRegex: '.*\\.spec\\.tsx$',
 };
 
-export default config;
+export default createJestConfig(config);

@@ -1,0 +1,33 @@
+{
+  "name": "NestJS/NextJS Template",
+  "description": "A fullstack template using NestJS and NextJS",
+  "repository": "https://github.com/princhcanal/nestjs-nextjs-template",
+  "website": "https://nestjs-nextjs-template.herokuapp.com",
+  "addons": ["heroku-postgresql:hobby-dev"],
+  "environments": {
+    "review": {
+      "addons": ["heroku-postgresql:hobby-dev"]
+    }
+  },
+  "env": {
+    "JWT_ACCESS_TOKEN_SECRET": {
+      "description": "Secret for access token",
+      "generator": "secret"
+    },
+    "JWT_ACCESS_TOKEN_EXPIRATION_TIME": "86400",
+    "JWT_REFRESH_TOKEN_SECRET": {
+      "description": "Secret for refresh token",
+      "generator": "secret"
+    },
+    "JWT_REFRESH_TOKEN_EXPIRATION_TIME": "31540000",
+    "PROJECT_PATH": "backend"
+  },
+  "buildpacks": [
+    {
+      "url": "https://github.com/timanovsky/subdir-heroku-buildpack"
+    },
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}
