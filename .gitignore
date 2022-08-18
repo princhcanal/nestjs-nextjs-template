@@ -5,3 +5,5 @@ build/
 .ash_history
 .vscode
 *.env
+.vim
+.vercel
