@@ -46,7 +46,7 @@ declare global {
        * Custom command to reset test data then log in
        * @example cy.resetTestDataAndLogin('test@test.com', 'test')
        */
-      resetTestDataAndLogin(email: string, password: string): void;
+      resetTestDataAndLogin(email?: string, password?: string): void;
     }
   }
 }

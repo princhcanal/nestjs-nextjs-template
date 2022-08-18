@@ -33,7 +33,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'resetTestDataAndLogin',
-  (email: string, password: string) => {
+  (email: string = 'test@test.com', password: string = 'test') => {
     cy.resetTestData();
     cy.login(email, password);
   }
