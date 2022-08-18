@@ -14,7 +14,7 @@ import { E2EModule } from './global/e2e/e2e.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env', '.env.local'],
+      envFilePath: ['.env', 'local.env'],
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
