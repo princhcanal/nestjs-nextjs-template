@@ -42,7 +42,7 @@ export default class TestEnvironment extends NodeEnvironment {
     const moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          envFilePath: ['.env', '.env.local'],
+          envFilePath: ['.env', 'local.env'],
           isGlobal: true,
           validationSchema: Joi.object({
             DATABASE_URL: Joi.string().required(),
