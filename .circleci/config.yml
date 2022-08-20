@@ -91,7 +91,7 @@ jobs:
           verify-command: cd frontend && npx cypress verify
       - run:
           name: Start app
-          command: npm run migration && npm start
+          command: npm run migration && npm run start:dev
           background: true
       - run:
           name: Run E2E Tests

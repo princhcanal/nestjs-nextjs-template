@@ -5,7 +5,7 @@ Cypress.Commands.add('resetTestData', () => {
   const urlPath = '/api/v1/e2e/reset-test-data';
   const url = baseUrl + urlPath;
 
-  return cy.request({ method: 'POST', url, timeout: 60000 }).wait(1000);
+  return cy.request({ method: 'POST', url, timeout: 60000 }).wait(2000);
 });
 
 Cypress.Commands.add('getBySel', (selector: string, ...children: string[]) => {
