@@ -1,4 +1,4 @@
-import { axiosInstance as axios } from '../axios';
+import { createAxiosInstance } from '../axios';
 import { AlertStatus, useToast } from '@chakra-ui/react';
 import { AxiosResponse } from 'axios';
 import { LocalStorageKeys } from '../enums/localStorageKeys';
@@ -19,8 +19,6 @@ const DEFAULT_USE_AXIOS_OPTIONS = {
   showToastOnSuccess: false,
 };
 
-let requestCount = 0;
-
 export const useAxios = ({
   showToastOnError,
   showToastOnSuccess,
@@ -31,6 +29,7 @@ export const useAxios = ({
   const toast = useToast();
   const router = useRouter();
   const getUser = useGlobalStore((state) => state.getUser);
+  const axios = createAxiosInstance();
 
   axios.interceptors.request.use(
     (config) => {
@@ -70,17 +69,7 @@ export const useAxios = ({
       return res;
     },
     async (e: any) => {
-      // this logic is needed because axios reruns this interceptor function four times
-      if (requestCount > 0) {
-        requestCount += 1;
-        if (requestCount === 4) {
-          requestCount = 0;
-        }
-        return Promise.reject(e);
-      }
-      requestCount += 1;
-
-      if (e) {
+      if (!!e) {
         const { message, statusCode, invalidRefreshToken } = e.response.data;
         const refreshToken = localStorage.getItem(
           LocalStorageKeys.REFRESH_TOKEN
