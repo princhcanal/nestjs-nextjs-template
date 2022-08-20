@@ -13,7 +13,9 @@ const publicBaseUrl =
 
 const baseURL = publicBaseUrl || reviewAppUrl || 'http://localhost:3000/api/v1';
 
-export const axiosInstance = axios.create({
-  baseURL,
-  withCredentials: true,
-});
+export const createAxiosInstance = () => {
+  return axios.create({
+    baseURL,
+    withCredentials: true,
+  });
+};
