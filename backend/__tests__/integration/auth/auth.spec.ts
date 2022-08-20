@@ -4,7 +4,7 @@ import { LoginResponseDTO } from '../../../src/authentication/dto/login-response
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
 import { TokensDTO } from '../../../src/authentication/dto/tokens.dto';
-import { registerUser, testUser } from '../fixtures/user.fixtures';
+import { registerUser, testRegisterUser } from '../fixtures/auth.fixtures';
 import { request } from '../setup';
 
 describe('auth.spec.ts - Authentication Controller', () => {
@@ -69,7 +69,7 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /register', () => {
     it('should successfully register when username, email, and password are provided', async () => {
-      await registerUser(testUser);
+      await registerUser(testRegisterUser);
     });
 
     it('should throw bad request exception when data is invalid', async () => {
@@ -113,7 +113,7 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /logout', () => {
     it('should successfully log out when user is sent', async () => {
-      const { user } = await registerUser(testUser);
+      const { user } = await registerUser(testRegisterUser);
 
       await request.post(logoutRoute).send(user).expect(HttpStatus.OK);
     });
@@ -125,15 +125,16 @@ describe('auth.spec.ts - Authentication Controller', () => {
 
   describe('POST /refresh', () => {
     it('should refresh access token', async () => {
-      const { tokens } = await registerUser(testUser);
+      const { tokens } = await registerUser(testRegisterUser);
 
       const { body } = await request
         .post(refreshRoute)
         .send(tokens)
         .expect(HttpStatus.OK);
-      const { accessToken } = body as TokensDTO;
+      const { accessToken, refreshToken } = body as TokensDTO;
 
       expect(accessToken).toBeTruthy();
+      expect(refreshToken).toBeTruthy();
     });
 
     it('should not refresh access token when no refresh token is sent', async () => {

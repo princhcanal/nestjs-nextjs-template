@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -18,4 +19,10 @@ model User {
   username                  String   @unique
   password                  String
   currentHashedRefreshToken String?
+  roles                     Role[]   @default([USER])
+}
+
+enum Role {
+  USER
+  ADMIN
 }

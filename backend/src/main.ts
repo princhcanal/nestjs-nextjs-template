@@ -1,5 +1,4 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
@@ -8,7 +7,6 @@ import {
   SwaggerModule,
   SwaggerDocumentOptions,
 } from '@nestjs/swagger';
-import { JwtAuthenticationGuard } from './authentication/guards/jwt-authentication.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,10 +24,6 @@ async function bootstrap() {
     });
   }
 
-  const reflector = app.get(Reflector);
-  app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
-  app.useGlobalGuards(new JwtAuthenticationGuard(reflector));
   app.use(cookieParser());
   app.use(helmet());
 

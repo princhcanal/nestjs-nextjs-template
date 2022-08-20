@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 import { LoginUserDTO } from '../../../src/authentication/dto/login-user.dto';
 import { RegisterUserDTO } from '../../../src/authentication/dto/register-user.dto';
 import bcrypt from 'bcrypt';
@@ -9,10 +9,11 @@ import { request } from '../setup';
 
 const authRoute = AuthenticationController.AUTH_API_ROUTE;
 const registerRoute = authRoute + AuthenticationController.REGISTER_API_ROUTE;
+const loginRoute = authRoute + AuthenticationController.LOGIN_API_ROUTE;
 
-export const testUser: RegisterUserDTO = {
-  username: 'test_user',
-  email: 'test_user@test.com',
+export const testRegisterUser: RegisterUserDTO = {
+  username: 'test_register',
+  email: 'test_register@test.com',
   password: 'test',
 };
 
@@ -27,6 +28,7 @@ export const createUser = async (
     updatedAt: new Date(),
     password: await bcrypt.hash(user.password, 10),
     currentHashedRefreshToken: null,
+    roles: [Role.USER],
   };
 
   if (user instanceof RegisterUserDTO) {
@@ -54,4 +56,18 @@ export const registerUser = async (
   expect(refreshToken).toBeTruthy();
 
   return body;
+};
+
+export const logIn = async (): Promise<LoginResponseDTO> => {
+  const loginUserDTO: LoginUserDTO = {
+    email: 'test@test.com',
+    password: 'test',
+  };
+
+  const { body } = await request
+    .post(loginRoute)
+    .send(loginUserDTO)
+    .expect(HttpStatus.OK);
+
+  return body as LoginResponseDTO;
 };

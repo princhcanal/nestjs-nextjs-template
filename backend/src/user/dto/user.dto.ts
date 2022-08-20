@@ -1,4 +1,12 @@
-import { IsDateString, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Role } from '@prisma/client';
+import {
+  IsArray,
+  IsDateString,
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class UserDTO {
   @IsString()
@@ -19,4 +27,9 @@ export class UserDTO {
   @IsString()
   @IsNotEmpty()
   public username: string;
+
+  @IsEnum(Role, { each: true })
+  @IsNotEmpty()
+  @IsArray()
+  public roles: Role[];
 }

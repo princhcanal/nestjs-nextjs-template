@@ -4,29 +4,23 @@ import {
   StartedPostgreSqlContainer,
 } from 'testcontainers';
 import { Test } from '@nestjs/testing';
-import { ConfigModule } from '@nestjs/config';
-import { AuthenticationModule } from '../../src/authentication/authentication.module';
-import { UserModule } from '../../src/user/user.module';
-import Joi from 'joi';
-import { AppController } from '../../src/app.controller';
-import { AppService } from '../../src/app.service';
 import request from 'supertest';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import { PrismaModule } from '../../src/global/prisma/prisma.module';
-import { AuthorizationModule } from '../../src/authorization/authorization.module';
 import { execSync } from 'child_process';
-import { ActiveProfilesModule } from '../../src/global/active-profiles/active-profiles.module';
-import { JwtAuthenticationGuard } from '../../src/authentication/guards/jwt-authentication.guard';
-import { TestDataModule } from '../../src/global/test-data/test-data.module';
 import { Event } from 'jest-circus';
-import { E2EModule } from '../../src/global/e2e/e2e.module';
+import { appModule } from '../../src/shared/app-module';
+import { PrismaService } from '../../src/global/prisma/prisma.service';
+// https://socket.dev/npm/package/@chax-at/transactional-prisma-testing
+import { PrismaTestingHelper } from '@chax-at/transactional-prisma-testing';
 
 export default class TestEnvironment extends NodeEnvironment {
   private readonly isCiBuild = process.env.IS_CI_BUILD;
   private container: StartedPostgreSqlContainer | undefined;
+  // Cache for the PrismaTestingHelper. Only one PrismaTestingHelper should be instantiated per test runner (i.e. only one if your tests run sequentially).
+  private prismaTestingHelper: PrismaTestingHelper<PrismaService> | undefined;
+  // Saves the PrismaService that will be used during test cases. Will always execute queries on the currently active transaction.
+  private prismaService: PrismaService;
 
   constructor(config: any) {
     super(config);
@@ -39,38 +33,15 @@ export default class TestEnvironment extends NodeEnvironment {
       await this.setNewTestContainer();
     }
 
-    const moduleFixture = await Test.createTestingModule({
-      imports: [
-        ConfigModule.forRoot({
-          envFilePath: ['.env', 'local.env'],
-          isGlobal: true,
-          validationSchema: Joi.object({
-            DATABASE_URL: Joi.string().required(),
-            PORT: Joi.number(),
-            JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
-            JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.number().required(),
-            JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
-            JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().required(),
-          }),
-        }),
-        AuthenticationModule,
-        UserModule,
-        AuthorizationModule,
-        PrismaModule,
-        ActiveProfilesModule,
-        TestDataModule,
-        E2EModule,
-      ],
-      controllers: [AppController],
-      providers: [AppService],
-    }).compile();
+    this.setPrisma();
+
+    const moduleFixture = await Test.createTestingModule(appModule)
+      .overrideProvider(PrismaService)
+      .useValue(this.prismaService)
+      .compile();
 
     const app = moduleFixture.createNestApplication();
 
-    const reflector = app.get(Reflector);
-    app.useGlobalPipes(new ValidationPipe());
-    app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
-    app.useGlobalGuards(new JwtAuthenticationGuard(reflector));
     app.use(cookieParser());
     app.use(helmet());
 
@@ -91,9 +62,12 @@ export default class TestEnvironment extends NodeEnvironment {
   }
 
   public async handleTestEvent(event: Event) {
+    if (event.name === 'test_start') {
+      await this.beforeEach();
+    }
+
     if (event.name === 'test_done') {
-      // reset db
-      execSync('prisma migrate reset --force');
+      this.afterEach();
     }
   }
 
@@ -104,6 +78,26 @@ export default class TestEnvironment extends NodeEnvironment {
   private async setNewTestContainer() {
     this.container = await new PostgreSqlContainer().start();
     this.setDbEnvVars(this.container);
-    execSync(`npm run prisma:migrate:dev init`);
+    execSync(`npm run prisma:migrate:dev:test init`);
+  }
+
+  private setPrisma() {
+    // Initialize testing helper if it has not been initialized before
+    const originalPrismaService = new PrismaService({
+      datasources: { db: { url: process.env.DATABASE_URL } },
+    });
+    // Seed your database / Create source database state that will be used in each test case (if needed)
+    // ...
+    this.prismaTestingHelper = new PrismaTestingHelper(originalPrismaService);
+    // Save prismaService. All calls to this prismaService will be routed to the currently active transaction
+    this.prismaService = this.prismaTestingHelper.getProxyClient();
+  }
+
+  private async beforeEach(): Promise<void> {
+    await this.prismaTestingHelper.startNewTransaction();
+  }
+
+  private afterEach(): void {
+    this.prismaTestingHelper.rollbackCurrentTransaction();
   }
 }

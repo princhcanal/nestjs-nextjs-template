@@ -1,6 +1,6 @@
-import { ConsoleLogger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 
-export class CustomLogger extends ConsoleLogger {
+export class CustomLogger extends Logger {
   public static readonly DEFAULT_PREFIX = '*';
   public static readonly DEFAULT_POSTFIX = '*';
 
