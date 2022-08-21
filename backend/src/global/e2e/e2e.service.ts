@@ -19,7 +19,7 @@ export class E2EService {
     await this.resetDb();
 
     // generates test data
-    await this.testDataService.resetTestData();
+    await this.testDataService.generateTestData();
 
     this.logger.log('DONE RESETTING BACKEND TEST DATA');
     this.logger.log('=============================================');

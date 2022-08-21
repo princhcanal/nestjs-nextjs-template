@@ -1,5 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { ActiveProfilesService } from '../active-profiles/active-profiles.service';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../global/prisma/prisma.service';
 import bcrypt from 'bcrypt';
 import { CustomLogger } from '../../shared/custom-logger';
@@ -28,26 +27,14 @@ export const testAdmin: User = {
 };
 
 @Injectable()
-export class UserTestDataService implements OnModuleInit {
+export class UserTestDataService {
   private readonly logger = new CustomLogger(UserTestDataService.name);
 
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly activeProfilesService: ActiveProfilesService
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
-  public async onModuleInit() {
-    if (
-      this.activeProfilesService.isTestDataProfileActive() ||
-      this.activeProfilesService.isTestProfileActive()
-    ) {
-      this.logger.log('GENERATING USER TEST DATA');
-      await this.generateData();
-      this.logger.log('DONE GENERATING USER TEST DATA');
-    }
-  }
+  public async generateTestData() {
+    this.logger.log('GENERATING USER TEST DATA');
 
-  private async generateData() {
     const foundUser = await this.prismaService.user.findUnique({
       where: { id: testUser.id },
     });
@@ -63,6 +50,8 @@ export class UserTestDataService implements OnModuleInit {
       this.logger.log('GENERATING TEST ADMIN');
       await this.createUser(testAdmin);
     }
+
+    this.logger.log('DONE GENERATING USER TEST DATA');
   }
 
   private async createUser(user: User) {
