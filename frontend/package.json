@@ -5,6 +5,7 @@
   "scripts": {
     "start": "next start",
     "start:dev": "next dev",
+    "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "lint": "next lint",
     "prepare": "cd ../ && husky install ./frontend/.husky",

@@ -14,6 +14,8 @@
     "start:frontend": "npm run start --prefix frontend",
     "start:dev:frontend": "npm run start:dev --prefix frontend",
     "start:prod:backend": "npm run start:prod --prefix backend",
+    "start:debug:frontend": "concurrently --kill-others \"npm run start:dev:backend\" \"npm run start:debug --prefix frontend\"",
+    "start:debug:backend": "concurrently --kill-others \"npm run start:debug --prefix backend\" \"npm run start:dev:frontend\"",
     "test:backend": "npm run test --prefix backend",
     "test:backend:watch": "npm run test:watch --prefix backend",
     "test:backend:ci": "npm run test:ci --prefix backend",
