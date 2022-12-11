@@ -24,9 +24,6 @@ export const appModule: ModuleMetadata = {
       isGlobal: true,
       validationSchema: Joi.object({
         DATABASE_URL: Joi.string().required(),
-        HEROKU_APP_NAME: Joi.string(),
-        HEROKU_BRANCH: Joi.string(),
-        HEROKU_PR_NUMBER: Joi.number(),
         PORT: Joi.number(),
         JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
         JWT_ACCESS_TOKEN_EXPIRATION_TIME: Joi.number().required(),
