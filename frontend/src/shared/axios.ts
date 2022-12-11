@@ -4,7 +4,7 @@ let reviewAppUrl;
 
 if (process.env.NEXT_PUBLIC_VERCEL_GIT_IS_PULL_REQUEST === '1') {
   const prNumber = process.env.NEXT_PUBLIC_VERCEL_GIT_PULL_REQUEST_NUMBER;
-  reviewAppUrl = `${process.env.NEXT_PUBLIC_HEROKU_PREVIEW_URL_PREFIX}${prNumber}.herokuapp.com/api/v1`;
+  reviewAppUrl = `${process.env.NEXT_PUBLIC_PREVIEW_URL_PREFIX}${prNumber}.up.railway.app/api/v1`;
 }
 
 const suffix = '/api/v1';

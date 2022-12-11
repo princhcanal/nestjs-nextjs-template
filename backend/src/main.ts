@@ -11,17 +11,21 @@ import {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const baseClientUrl = process.env.BASE_CLIENT_URL;
-  const branch = process.env.HEROKU_BRANCH;
+  const railwayEnvironment = process.env.RAILWAY_ENVIRONMENT;
 
-  if (baseClientUrl) {
-    app.enableCors({ origin: baseClientUrl, credentials: true });
-  } else if (branch) {
+  if (
+    !!railwayEnvironment &&
+    railwayEnvironment !== 'production' &&
+    railwayEnvironment !== 'staging'
+  ) {
     app.enableCors({
       origin: (origin, callback) => {
         callback(undefined, origin);
       },
       credentials: true,
     });
+  } else if (baseClientUrl) {
+    app.enableCors({ origin: baseClientUrl, credentials: true });
   }
 
   app.use(cookieParser());
