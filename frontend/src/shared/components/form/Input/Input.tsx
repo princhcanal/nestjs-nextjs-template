@@ -34,6 +34,6 @@ export const Input = ({
       </FormLabel>
     )}
     <ChakraInput {...field} {...props} />
-    <FormErrorMessage>{form.errors[props.name!]}</FormErrorMessage>
+    <FormErrorMessage>{form.errors[props.name!] as string}</FormErrorMessage>
   </FormControl>
 );

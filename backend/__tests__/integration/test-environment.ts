@@ -22,8 +22,8 @@ export default class TestEnvironment extends NodeEnvironment {
   // Saves the PrismaService that will be used during test cases. Will always execute queries on the currently active transaction.
   private prismaService: PrismaService;
 
-  constructor(config: any) {
-    super(config);
+  constructor(config: any, _context: any) {
+    super(config, _context);
   }
 
   public async setup() {

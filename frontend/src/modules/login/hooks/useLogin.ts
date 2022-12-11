@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { LoginUserDTO } from 'generated-api';
 import { ApiContext } from '../../../shared/providers/ApiProvider';
 import { useGlobalStore } from '../../../shared/stores';

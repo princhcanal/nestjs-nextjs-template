@@ -1,8 +1,8 @@
 import '../styles/globals.scss';
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ApiProvider } from '../shared/providers/ApiProvider';
 import { useGlobalStore } from '../shared/stores';
 import { useRouter } from 'next/router';
