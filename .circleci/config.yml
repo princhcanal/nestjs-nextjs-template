@@ -1,13 +1,13 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@3.0.0
-  cypress: cypress-io/cypress@1
+  node: circleci/node@5.0.3
+  cypress: cypress-io/cypress@2.2.0
 
 jobs:
   test-backend-integration:
     docker:
-      - image: cimg/node:16.13
+      - image: cimg/node:18.12.1
       - image: circleci/postgres
         environment:
           POSTGRES_DB: template
@@ -65,7 +65,7 @@ jobs:
           path: ./frontend/reports/junit
   test-e2e:
     docker:
-      - image: cimg/node:16.13
+      - image: cimg/node:18.12.1
       - image: circleci/postgres
         environment:
           POSTGRES_DB: template

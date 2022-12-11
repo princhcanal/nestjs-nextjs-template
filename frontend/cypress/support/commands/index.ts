@@ -16,13 +16,16 @@ declare global {
        * Custom command to select DOM element by data-cy attribute.
        * @example cy.getBySel('greeting')
        */
-      getBySel(selector: string, ...children: string[]): Chainable<Element>;
+      getBySel(
+        selector: string,
+        ...children: string[]
+      ): Chainable<JQuery<HTMLElement>>;
 
       /**
        * Custom command to select DOM element by data-cy attribute.
        * @example cy.containsBySel('btn', 'Add')
        */
-      containsBySel(selector: string, text: string): Chainable<Element>;
+      containsBySel(selector: string, text: string): Chainable<JQuery<Element>>;
 
       /**
        * Custom command to log in

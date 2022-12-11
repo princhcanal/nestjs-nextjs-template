@@ -1,4 +1,4 @@
-import { useMutation } from 'react-query';
+import { useMutation } from '@tanstack/react-query';
 import { RegisterUserDTO } from 'generated-api';
 import { useContext } from 'react';
 import { ApiContext } from '../../../shared/providers/ApiProvider';

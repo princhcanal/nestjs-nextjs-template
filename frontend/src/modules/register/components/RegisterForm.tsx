@@ -83,7 +83,7 @@ export const RegisterForm = () => {
                 formNoValidate
                 type='submit'
                 isLoading={mutation.isLoading}
-                isFullWidth
+                width='full'
                 bgColor='gray.800'
                 color='gray.50'
                 _hover={{ bgColor: 'gray.800', color: 'gray.50' }}
