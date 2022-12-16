@@ -6,11 +6,22 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ApiProvider } from '../shared/providers/ApiProvider';
 import { useGlobalStore } from '../shared/stores';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import { NextPage } from 'next';
+import { Layout } from '../shared/components/ui/Layout';
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
 
 const queryClient = new QueryClient();
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout ?? Layout;
   const getUser = useGlobalStore((state) => state.getUser);
   const router = useRouter();
   const [showPage, setShowPage] = useState(false);
@@ -31,7 +42,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ChakraProvider>
       <ApiProvider>
         <QueryClientProvider client={queryClient}>
-          {showPage && <Component {...pageProps} />}
+          {showPage && getLayout(<Component {...pageProps} />)}
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ApiProvider>
