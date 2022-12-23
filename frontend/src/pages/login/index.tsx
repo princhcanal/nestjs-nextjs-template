@@ -1,7 +1,9 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticProps } from 'next';
 import { Login } from '../../modules/login/components/Login';
+import { CenterLayout } from '../../shared/components/ui/CenterLayout';
+import { NextPageWithLayout } from '../_app';
 
-const LoginPage: NextPage = () => <Login />;
+const LoginPage: NextPageWithLayout = () => <Login />;
 
 export const getStaticProps: GetStaticProps = () => {
   return {
@@ -10,5 +12,7 @@ export const getStaticProps: GetStaticProps = () => {
     },
   };
 };
+
+LoginPage.getLayout = CenterLayout;
 
 export default LoginPage;

@@ -1,7 +1,9 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticProps } from 'next';
 import { Register } from '../../modules/register/components/Register';
+import { CenterLayout } from '../../shared/components/ui/CenterLayout';
+import { NextPageWithLayout } from '../_app';
 
-const RegisterPage: NextPage = () => <Register />;
+const RegisterPage: NextPageWithLayout = () => <Register />;
 
 export const getStaticProps: GetStaticProps = () => {
   return {
@@ -10,5 +12,7 @@ export const getStaticProps: GetStaticProps = () => {
     },
   };
 };
+
+RegisterPage.getLayout = CenterLayout;
 
 export default RegisterPage;
