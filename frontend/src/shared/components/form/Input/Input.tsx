@@ -27,7 +27,7 @@ export const Input = ({
       <FormLabel
         htmlFor={props.id}
         mb='2'
-        color='gray.800'
+        color='white.900'
         fontWeight='semibold'
       >
         {label}

@@ -25,7 +25,7 @@ export const RegisterForm = () => {
   });
 
   return (
-    <Box bg='gray.200' p='8' borderRadius='md' w='xl'>
+    <Box bg='gray.700' p='8' borderRadius='md' w='xl'>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}

@@ -14,8 +14,6 @@ export const NavLink: React.FC<
   const router = useRouter();
 
   const isActive = router.pathname === href;
-  const background = 'whiteAlpha.900';
-  const color = 'blackAlpha.900';
 
   return (
     <Box
@@ -24,14 +22,13 @@ export const NavLink: React.FC<
       {...props}
       fontSize='xl'
       fontWeight='semibold'
-      _hover={{ background, color }}
+      _hover={{ background: 'whiteAlpha.400' }}
       transition='all 0.2s ease-in-out'
       width='full'
       borderRadius='md'
       py='1'
       px='4'
-      background={isActive ? background : ''}
-      color={isActive ? color : ''}
+      background={isActive ? 'gray.700' : ''}
     >
       <Link href={href} style={{ display: 'block', width: '100%' }}>
         {children}

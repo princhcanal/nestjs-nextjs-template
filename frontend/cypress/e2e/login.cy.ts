@@ -13,9 +13,8 @@ describe('login.spec.ts - Login Form', () => {
   it('should successfully log out', () => {
     cy.login('test@test.com', 'test');
 
-    // this check is needed for the "Log Out" button to be detected by cypress
-    cy.get('.chakra-heading').contains('Home').should('exist');
-    cy.get('.chakra-button').contains('Log Out').click();
+    cy.getBySel('user-profile-btn').click();
+    cy.getBySel('logout-btn').click();
     cy.wait('@logout');
 
     cy.url().should('contain', 'login');
