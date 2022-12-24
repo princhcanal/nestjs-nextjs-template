@@ -20,7 +20,7 @@ export const Navbar = (props: ChakraProps) => {
   return (
     <Flex
       direction='column'
-      justifyContent='space-between'
+      justify='space-between'
       h='100vh'
       as='nav'
       {...props}
@@ -50,7 +50,7 @@ export const Navbar = (props: ChakraProps) => {
           alignItems='center'
           data-cy='user-profile-btn'
         >
-          <Flex alignItems='center' gap='4'>
+          <Flex align='center' gap='4'>
             <Avatar mr='2' />
             <Text fontWeight='bold'>User Profile</Text>
           </Flex>

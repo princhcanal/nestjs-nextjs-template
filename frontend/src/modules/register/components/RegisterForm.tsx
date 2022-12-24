@@ -94,7 +94,7 @@ export const RegisterForm = () => {
           </Form>
         )}
       </Formik>
-      <Flex justifyContent='right' color='gray.500'>
+      <Flex justify='right' color='gray.500'>
         <NextLink href='/login' passHref>
           <Link>Log In</Link>
         </NextLink>
