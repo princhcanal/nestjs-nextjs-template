@@ -10,12 +10,19 @@ import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { Layout } from '../shared/components/ui/Layout';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode;
+export type AppPropsWithAuth = AppProps & {
+  isAuth: boolean;
 };
 
-type AppPropsWithLayout = AppProps & {
+export type AppPropsWithLayout = AppPropsWithAuth & {
   Component: NextPageWithLayout;
+};
+
+export type NextPageWithLayout<P = AppPropsWithLayout, IP = P> = NextPage<
+  P,
+  IP
+> & {
+  getLayout?: (page: ReactElement) => ReactNode;
 };
 
 const queryClient = new QueryClient();
@@ -42,7 +49,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <ChakraProvider>
       <ApiProvider>
         <QueryClientProvider client={queryClient}>
-          {showPage && getLayout(<Component {...pageProps} />)}
+          {showPage &&
+            getLayout(<Component isAuth={!!getUser()} {...pageProps} />)}
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </ApiProvider>
