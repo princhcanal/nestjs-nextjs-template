@@ -1,19 +1,16 @@
-import type { NextPage } from 'next';
-import { useGlobalStore } from '../shared/stores';
 import { Landing } from '../modules/index/components/Landing';
 import { Home } from '../modules/index/components/Home';
-import { useEffect, useState } from 'react';
-import { UserDTO } from 'generated-api';
+import { ReactElement } from 'react';
+import { AppPropsWithLayout, NextPageWithLayout } from './_app';
+import { Layout } from '../shared/components/ui/Layout';
+import { CenterLayout } from '../shared/components/ui/CenterLayout';
 
-const Index: NextPage = () => {
-  const [user, setUser] = useState<UserDTO | undefined>();
-  const getUser = useGlobalStore((state) => state.getUser);
+const Index: NextPageWithLayout = ({ isAuth }: AppPropsWithLayout) => {
+  return isAuth ? <Home /> : <Landing />;
+};
 
-  useEffect(() => {
-    setUser(getUser());
-  }, [getUser]);
-
-  return user ? <Home /> : <Landing />;
+Index.getLayout = (page: ReactElement<AppPropsWithLayout>) => {
+  return page.props.isAuth ? Layout(page) : CenterLayout(page);
 };
 
 export default Index;
