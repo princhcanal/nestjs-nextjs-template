@@ -25,11 +25,11 @@ export const Navbar = (props: ChakraProps) => {
       as='nav'
       {...props}
     >
-      <Heading py='8' mx='12' h='10%'>
+      <Heading py='8' mx='12' h='20'>
         Logo Here
       </Heading>
 
-      <Box h='80%' overflowY='auto' my='4' ml='12'>
+      <Box overflowY='auto' my='4' ml='12' flexGrow='1'>
         <VStack as='ul' alignItems='flex-start' w='80%'>
           <NavLink href='/'>Home</NavLink>
         </VStack>
@@ -38,7 +38,7 @@ export const Navbar = (props: ChakraProps) => {
       <Menu>
         <MenuButton
           as={Box}
-          h='10%'
+          h='20'
           px='12'
           cursor='pointer'
           borderRadius='md'
